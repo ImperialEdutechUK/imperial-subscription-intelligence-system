@@ -408,6 +408,15 @@ body {
   grid-row: auto !important;
 }
 
+/* One span still means something. A tile authored as the full twelve was asking
+   to own its row, not to be one cell of it — flattening those too left a
+   half-width tile with an empty half beside it on Analytics, Renewals and the
+   shared-cost flow. This restores that intent against whatever grid it lands
+   in, which is why it is 1 / -1 rather than a column count. */
+.bento-tile[data-col='12'] {
+  grid-column: 1 / -1 !important;
+}
+
 /* Touch targets.
    Keyed on the pointer rather than the viewport on purpose: a laptop with a
    touchscreen needs these too, and a phone held in landscape is still a phone.

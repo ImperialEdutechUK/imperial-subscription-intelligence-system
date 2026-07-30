@@ -330,7 +330,9 @@ export function CardsWorkbench({ cards, canEdit }: { cards: CardRow[]; canEdit: 
           />
         </div>
       ) : (
-        <div className="bento">
+        // Three across: the cards are authored as a third of the grid each, and
+        // two columns left the fifth alone against an empty half.
+        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {ordered.map((c) => {
             const meta = metaFor(c.type);
             const risk = RISK[c.riskLevel];
