@@ -19,10 +19,12 @@ import {
   Sun,
   Upload,
   CalendarClock,
+  LogOut,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { IconButton, Kbd } from '@/components/ui/controls';
 import { CommandPalette } from './CommandPalette';
+import { signOut } from '@/server/auth-actions';
 
 const NAV = [
   { href: '/', label: 'Dashboard', icon: LayoutDashboard, hint: 'Bento overview of spend, renewals and risk' },
@@ -64,6 +66,7 @@ export function AppShell({
   initialDensity,
   initialCollapsed,
   themeChosen,
+  user,
 }: {
   children: React.ReactNode;
   orgName: string;
@@ -72,6 +75,8 @@ export function AppShell({
   initialCollapsed: boolean;
   /** False until the user has expressed a preference, in which case the OS decides. */
   themeChosen: boolean;
+  /** Null on the sign-in page, where there is nobody to sign out. */
+  user: { name: string; email: string; role: string } | null;
 }) {
   const pathname = usePathname();
   const [chosenTheme, setChosenTheme] = useState<Theme | null>(themeChosen ? initialTheme : null);
@@ -198,6 +203,33 @@ export function AppShell({
         </div>
 
         <div className="space-y-2 px-2 pb-3" style={{ borderTop: '1px solid var(--border-subtle)', paddingTop: '0.75rem' }}>
+          {/* Who is signed in, and the way out. A shared workstation is the norm
+              here, so leaving no way to end a session would mean the next person
+              inherits an administrator's view of stored credentials. */}
+          {user ? (
+            <form action={signOut} className={cn('flex items-center gap-2', collapsed ? 'justify-center' : 'px-1')}>
+              {!collapsed ? (
+                <div className="min-w-0 flex-1 leading-tight">
+                  <p className="truncate text-[0.75rem] font-medium" style={{ color: 'var(--text-secondary)' }}>
+                    {user.name}
+                  </p>
+                  <p className="truncate text-[0.6875rem]" style={{ color: 'var(--text-tertiary)' }} title={user.email}>
+                    {user.role.charAt(0) + user.role.slice(1).toLowerCase()}
+                  </p>
+                </div>
+              ) : null}
+              <button
+                type="submit"
+                title={`Sign out ${user.email}`}
+                aria-label={`Sign out ${user.email}`}
+                className="grid size-7 shrink-0 cursor-pointer place-items-center rounded-[var(--radius-sm)] transition-colors hover:bg-[var(--surface-hover)]"
+                style={{ color: 'var(--text-tertiary)' }}
+              >
+                <LogOut size={14} strokeWidth={2} aria-hidden />
+              </button>
+            </form>
+          ) : null}
+
           <div className={cn('flex items-center gap-1', collapsed ? 'flex-col' : 'justify-between px-1')}>
             <IconButton
               icon={theme === 'dark' ? Sun : Moon}
@@ -247,6 +279,23 @@ export function AppShell({
                 <Kbd>K</Kbd>
               </span>
             </button>
+
+            {/* The sidebar is hidden below `md`, and nothing replaces it, so the
+                sign-out control there is unreachable on a phone. This one covers
+                that case and is hidden once the sidebar is visible. */}
+            {user ? (
+              <form action={signOut} className="md:hidden">
+                <button
+                  type="submit"
+                  title={`Sign out ${user.email}`}
+                  aria-label={`Sign out ${user.email}`}
+                  className="grid size-8 cursor-pointer place-items-center rounded-[var(--radius-sm)] border transition-colors hover:bg-[var(--surface-hover)]"
+                  style={{ borderColor: 'var(--border-default)', color: 'var(--text-tertiary)', background: 'var(--surface-raised)' }}
+                >
+                  <LogOut size={14} strokeWidth={2} aria-hidden />
+                </button>
+              </form>
+            ) : null}
           </div>
         </header>
 

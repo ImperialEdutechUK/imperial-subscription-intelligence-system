@@ -4,6 +4,7 @@ import { Inter } from 'next/font/google';
 import './globals.css';
 import { AppShell } from '@/components/shell/AppShell';
 import { getBrandSettings } from '@/server/settings';
+import { getSession } from '@/lib/auth';
 
 const inter = Inter({
   subsets: ['latin'],
@@ -39,7 +40,7 @@ export const viewport: Viewport = {
  * first byte of HTML, with no flash and nothing for the client to disagree with.
  */
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
-  const [brand, jar] = await Promise.all([getBrandSettings(), cookies()]);
+  const [brand, jar, user] = await Promise.all([getBrandSettings(), cookies(), getSession()]);
   const themeCookie = jar.get('ie-theme')?.value;
   const themeChosen = themeCookie === 'dark' || themeCookie === 'light';
   const theme = themeCookie === 'dark' ? 'dark' : 'light';
@@ -71,6 +72,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
           initialDensity={density}
           initialCollapsed={collapsed}
           themeChosen={themeChosen}
+          user={user ? { name: user.name, email: user.email, role: user.role } : null}
         >
           {children}
         </AppShell>
