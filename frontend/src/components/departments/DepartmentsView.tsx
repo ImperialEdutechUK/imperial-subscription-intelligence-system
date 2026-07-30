@@ -95,7 +95,11 @@ export function DepartmentsView({
             />
           </TileBody>
         </BentoTile>
+      </div>
 
+      {/* Full width: nine rows of bars, and as the third tile in a two-column
+          grid it sat in the left half with an empty half beside it. */}
+      <div>
         <BentoTile col={6} row={2}>
           <TileHeader
             title="Monthly cost by department"
@@ -140,8 +144,10 @@ export function DepartmentsView({
         </BentoTile>
       </div>
 
-      {/* ── Department cards ─────────────────────────────────────────── */}
-      <div className="bento">
+      {/* ── Department cards ─────────────────────────────────────────────
+          Three across, not two: there are nine departments, so a two-column
+          grid always stranded the last one alone against an empty half. */}
+      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
         {ranked.map((d) => {
           const sharePct = totalMonthly > 0 ? (d.monthlyGbp / totalMonthly) * 100 : 0;
           return (
