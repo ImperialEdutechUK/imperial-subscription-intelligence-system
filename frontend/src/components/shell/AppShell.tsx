@@ -127,13 +127,10 @@ export function AppShell({
           mostly made of. The page title is not repeated here — every page
           already opens with its own header. */}
       <header
-        className="no-print sticky top-0 z-40 backdrop-blur-md"
-        style={{
-          background: 'color-mix(in srgb, var(--surface-raised) 82%, transparent)',
-          borderBottom: '1px solid var(--border-subtle)',
-        }}
+        className="no-print sticky top-0 z-40"
+        style={{ background: 'var(--surface-raised)', borderBottom: '1px solid var(--border-default)' }}
       >
-        <div className="mx-auto flex h-12 w-full max-w-[1600px] items-center gap-1 px-4 md:px-6">
+        <div className="mx-auto flex h-14 w-full max-w-[1600px] items-center gap-1 px-4 md:px-6">
           <button
             onClick={() => setNavOpen((v) => !v)}
             aria-label={navOpen ? 'Close menu' : 'Open menu'}
@@ -147,13 +144,13 @@ export function AppShell({
 
           <Link href="/" className="mr-3 flex shrink-0 items-center gap-2" aria-label={`${orgName} home`}>
             <span
-              className="grid size-6 shrink-0 place-items-center rounded-[var(--radius-xs)] text-micro font-bold text-white"
+              className="grid size-7 shrink-0 place-items-center rounded-[var(--radius-sm)] text-meta font-bold text-white"
               style={{ background: 'var(--brand-600)' }}
               aria-hidden
             >
               IE
             </span>
-            <span className="hidden truncate text-title font-semibold sm:inline" style={{ color: 'var(--text-primary)' }}>
+            <span className="hidden truncate text-sm font-semibold sm:inline" style={{ color: 'var(--text-primary)' }}>
               {orgName}
             </span>
           </Link>
@@ -169,8 +166,12 @@ export function AppShell({
                   href={item.href}
                   title={item.hint}
                   aria-current={isActive ? 'page' : undefined}
-                  className="rounded-[var(--radius-sm)] px-2.5 py-1.5 text-xs font-medium whitespace-nowrap transition-colors hover:bg-[var(--surface-hover)]"
-                  style={isActive ? { color: 'var(--text-primary)', background: 'var(--surface-hover)' } : { color: 'var(--text-tertiary)' }}
+                  className="rounded-[var(--radius-sm)] px-3 py-2 text-sm font-medium whitespace-nowrap transition-colors hover:bg-[var(--surface-hover)]"
+                  style={
+                    isActive
+                      ? { color: 'var(--brand-700)', background: 'var(--brand-50)' }
+                      : { color: 'var(--text-secondary)' }
+                  }
                 >
                   {item.label}
                 </Link>
@@ -228,7 +229,7 @@ export function AppShell({
         <nav
           id="mobile-nav"
           aria-label="Primary"
-          className="no-print sticky top-12 z-30 md:hidden"
+          className="no-print sticky top-14 z-30 md:hidden"
           style={{ background: 'var(--surface-raised)', borderBottom: '1px solid var(--border-subtle)', boxShadow: 'var(--shadow-md)' }}
         >
           <ul className="space-y-0.5 p-2">

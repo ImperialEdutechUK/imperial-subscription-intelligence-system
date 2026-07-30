@@ -42,7 +42,7 @@ export const ORGANISATION = {
    * for normal-size text. If you replace it with a lighter colour the
    * application will still work, but Settings will warn you about contrast.
    */
-  brandHex: '#DA291C',
+  brandHex: '#1266D3',
 
   /** The currency everything is reported in. Individual subscriptions can be billed in others. */
   reportingCurrency: 'GBP',

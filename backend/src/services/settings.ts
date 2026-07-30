@@ -8,8 +8,8 @@ export interface BrandSettings {
   orgName: string;
 }
 
-/** Imperial red. Contrast against white measures 4.87:1 — WCAG 2.1 AA for normal text. */
-export const DEFAULT_BRAND_HEX = '#DA291C';
+/** Imperial blue. The -700 step carries small text where the -500 lacks headroom. */
+export const DEFAULT_BRAND_HEX = '#1266D3';
 
 export function hexToHsl(hex: string): { h: number; s: number; l: number } | null {
   const m = hex.trim().replace('#', '');

@@ -31,17 +31,17 @@
    entire interface re-tunes — ramps, tints, focus rings, chart accents and
    dark mode included. Nothing is hard-coded to a specific red.
 
-   Default is hsl(4 77% 48%) ≈ #DA291C, a deep institutional red.
-   Measured contrast of that red against white is 4.87:1, which meets
-   WCAG 2.1 AA for normal-size text. The generated -700 step is used wherever
-   brand colour carries small text, giving further headroom.
+   Default is hsl(214 84% 45%) ≈ #1266D3. The neutrals are tinted with the
+   same hue, so the greys read as cool near-blacks beside it and the -50/-100
+   steps supply the light blues. The generated -700 step is used wherever brand
+   colour carries small text, giving contrast headroom over the -500.
    ═══════════════════════════════════════════════════════════════════════════ */
 
 :root {
   /* ── Brand seed ───────────────────────────────────────────────────────── */
-  --brand-h: 4;
-  --brand-s: 77%;
-  --brand-l: 48%;
+  --brand-h: 214;
+  --brand-s: 84%;
+  --brand-l: 45%;
 
   /* ── Derived brand ramp ───────────────────────────────────────────────── */
   --brand-50: hsl(var(--brand-h) calc(var(--brand-s) * 0.55) 97%);
@@ -99,9 +99,13 @@
   --warning: hsl(32 88% 36%);
   --warning-bg: hsl(38 92% 95%);
   --warning-border: hsl(36 72% 80%);
-  --danger: hsl(var(--brand-h) 74% 42%);
-  --danger-bg: hsl(var(--brand-h) 76% 96%);
-  --danger-border: hsl(var(--brand-h) 60% 86%);
+  /* Fixed red, not brand-derived. These were tied to --brand-h back when the
+     brand was itself a red; following the hue would now render every error,
+     overdue renewal and delete confirmation in the same blue as the primary
+     action. Danger has to stay red whatever the brand does. */
+  --danger: hsl(4 74% 42%);
+  --danger-bg: hsl(4 76% 96%);
+  --danger-border: hsl(4 60% 86%);
   --info: hsl(214 74% 42%);
   --info-bg: hsl(214 84% 96%);
   --info-border: hsl(214 60% 86%);
@@ -221,9 +225,10 @@
   --warning: hsl(38 88% 64%);
   --warning-bg: hsl(36 46% 14%);
   --warning-border: hsl(36 40% 28%);
-  --danger: hsl(var(--brand-h) 82% 68%);
-  --danger-bg: hsl(var(--brand-h) 44% 15%);
-  --danger-border: hsl(var(--brand-h) 40% 30%);
+  /* Fixed red here too — see the light theme. */
+  --danger: hsl(4 82% 68%);
+  --danger-bg: hsl(4 44% 15%);
+  --danger-border: hsl(4 40% 30%);
   --info: hsl(214 84% 70%);
   --info-bg: hsl(214 44% 15%);
   --info-border: hsl(214 40% 30%);
