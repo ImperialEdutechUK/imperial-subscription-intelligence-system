@@ -110,9 +110,11 @@
   --density-gap: 1rem;
   --density-font: 0.875rem;
 
-  /* ── Motion ───────────────────────────────────────────────────────────── */
+  /* ── Motion. One curve, everywhere: an exponential decelerate. The palette
+        previously popped in on an overshoot spring, which was the only
+        springy motion in the interface and read as a flourish next to
+        everything else settling smoothly. ─────────────────────────────────── */
   --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
-  --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
   --dur-fast: 120ms;
   --dur-base: 200ms;
   --dur-slow: 380ms;
@@ -462,7 +464,7 @@ body {
   border-radius: var(--radius-xl);
   box-shadow: var(--shadow-lg);
   overflow: hidden;
-  animation: pop-in var(--dur-base) var(--ease-spring);
+  animation: pop-in var(--dur-base) var(--ease-out);
 }
 
 @keyframes fade-in {
