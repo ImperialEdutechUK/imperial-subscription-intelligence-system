@@ -77,12 +77,12 @@ export function TileHeader({
   return (
     <header className={cn('flex items-start justify-between gap-3 px-4 pt-4 pb-2', className)}>
       <div className="min-w-0">
-        <h3 className="flex items-center gap-2 text-[0.8125rem] font-semibold tracking-tight" style={{ color: 'var(--text-primary)' }}>
+        <h3 className="flex items-center gap-2 text-title font-semibold tracking-tight" style={{ color: 'var(--text-primary)' }}>
           {Icon ? <Icon size={14} strokeWidth={2.2} style={{ color: 'var(--text-tertiary)' }} aria-hidden /> : null}
           <span className="truncate">{title}</span>
         </h3>
         {subtitle ? (
-          <p className="mt-0.5 text-xs leading-snug" style={{ color: 'var(--text-tertiary)' }}>
+          <p className="mt-0.5 max-w-[58ch] text-xs leading-snug" style={{ color: 'var(--text-tertiary)' }}>
             {subtitle}
           </p>
         ) : null}
@@ -147,7 +147,7 @@ export function Badge({
     <span
       className={cn(
         'inline-flex items-center gap-1 rounded-full border font-medium whitespace-nowrap',
-        size === 'xs' ? 'px-1.5 py-0.5 text-[0.6875rem]' : 'px-2 py-0.5 text-xs',
+        size === 'xs' ? 'px-1.5 py-0.5 text-meta' : 'px-2 py-0.5 text-xs',
         className,
       )}
       style={TONE_STYLE[tone]}
@@ -360,7 +360,7 @@ export function SectionHeading({
           {title}
         </h2>
         {description ? (
-          <p className="mt-0.5 max-w-2xl text-sm leading-relaxed" style={{ color: 'var(--text-secondary)' }}>
+          <p className="mt-0.5 max-w-[58ch] text-sm leading-relaxed" style={{ color: 'var(--text-secondary)' }}>
             {description}
           </p>
         ) : null}
@@ -376,7 +376,7 @@ export function KeyValue({ label, children, mono }: { label: ReactNode; children
       <dt className="shrink-0 text-xs" style={{ color: 'var(--text-tertiary)' }}>
         {label}
       </dt>
-      <dd className={cn('min-w-0 text-right text-sm', mono && 'font-mono text-[0.8125rem]')} style={{ color: 'var(--text-primary)' }}>
+      <dd className={cn('min-w-0 text-right text-sm', mono && 'font-mono text-title')} style={{ color: 'var(--text-primary)' }}>
         {children}
       </dd>
     </div>
@@ -386,7 +386,7 @@ export function KeyValue({ label, children, mono }: { label: ReactNode; children
 /** Small caption used under statistics to disclose sample size and method. */
 export function StatFootnote({ children }: { children: ReactNode }) {
   return (
-    <p className="mt-2 text-[0.6875rem] leading-relaxed" style={{ color: 'var(--text-tertiary)' }}>
+    <p className="mt-2 text-meta leading-relaxed" style={{ color: 'var(--text-tertiary)' }}>
       {children}
     </p>
   );

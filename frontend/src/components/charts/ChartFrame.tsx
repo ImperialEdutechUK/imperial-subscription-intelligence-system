@@ -50,7 +50,7 @@ export function ChartFrame({
         <div className="flex min-w-0 flex-wrap items-center gap-x-3 gap-y-1">
           {legend && legend.length > 1
             ? legend.map((l) => (
-                <span key={l.label} className="flex items-center gap-1.5 text-[0.6875rem]" style={{ color: 'var(--text-secondary)' }}>
+                <span key={l.label} className="flex items-center gap-1.5 text-meta" style={{ color: 'var(--text-secondary)' }}>
                   <span className="size-2 shrink-0 rounded-[2px]" style={{ background: l.color }} aria-hidden />
                   <span className="truncate">{l.label}</span>
                   {l.value ? (
@@ -83,7 +83,7 @@ export function ChartFrame({
       </div>
 
       {caption ? (
-        <p className="mt-2 text-[0.6875rem] leading-relaxed" style={{ color: 'var(--text-tertiary)' }}>
+        <p className="mt-2 max-w-[58ch] text-meta leading-relaxed" style={{ color: 'var(--text-tertiary)' }}>
           {caption}
         </p>
       ) : null}

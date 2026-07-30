@@ -149,7 +149,7 @@ export function AppShell({
       >
         <div className={cn('flex h-14 items-center gap-2.5 px-3.5', collapsed && 'justify-center px-0')}>
           <div
-            className="grid size-8 shrink-0 place-items-center rounded-[10px] text-[13px] font-bold text-white"
+            className="grid size-8 shrink-0 place-items-center rounded-[10px] text-title font-bold text-white"
             style={{ background: 'var(--brand-600)', boxShadow: 'var(--shadow-brand)' }}
             aria-hidden
           >
@@ -157,10 +157,10 @@ export function AppShell({
           </div>
           {!collapsed ? (
             <div className="min-w-0 leading-tight">
-              <p className="truncate text-[0.8125rem] font-semibold" style={{ color: 'var(--text-primary)' }}>
+              <p className="truncate text-title font-semibold" style={{ color: 'var(--text-primary)' }}>
                 {orgName}
               </p>
-              <p className="truncate text-[0.6875rem]" style={{ color: 'var(--text-tertiary)' }}>
+              <p className="truncate text-meta" style={{ color: 'var(--text-tertiary)' }}>
                 Subscription Intelligence
               </p>
             </div>
@@ -177,7 +177,7 @@ export function AppShell({
                 href={item.href}
                 title={collapsed ? item.label : item.hint}
                 className={cn(
-                  'group relative flex items-center gap-2.5 rounded-[var(--radius-sm)] px-2.5 py-2 text-[0.8125rem] font-medium transition-colors duration-150',
+                  'group relative flex items-center gap-2.5 rounded-[var(--radius-sm)] px-2.5 py-2 text-title font-medium transition-colors duration-150',
                   collapsed && 'justify-center px-0',
                 )}
                 style={
@@ -208,10 +208,10 @@ export function AppShell({
             <form action={signOut} className={cn('flex items-center gap-2', collapsed ? 'justify-center' : 'px-1')}>
               {!collapsed ? (
                 <div className="min-w-0 flex-1 leading-tight">
-                  <p className="truncate text-[0.75rem] font-medium" style={{ color: 'var(--text-secondary)' }}>
+                  <p className="truncate text-xs font-medium" style={{ color: 'var(--text-secondary)' }}>
                     {user.name}
                   </p>
-                  <p className="truncate text-[0.6875rem]" style={{ color: 'var(--text-tertiary)' }} title={user.email}>
+                  <p className="truncate text-meta" style={{ color: 'var(--text-tertiary)' }} title={user.email}>
                     {user.role.charAt(0) + user.role.slice(1).toLowerCase()}
                   </p>
                 </div>
@@ -359,7 +359,7 @@ export function AppShell({
 
         <main className="min-w-0 flex-1 px-4 py-5 md:px-6 md:py-6">{children}</main>
 
-        <footer className="no-print px-6 pb-6 text-[0.6875rem]" style={{ color: 'var(--text-tertiary)' }}>
+        <footer className="no-print px-6 pb-6 text-meta" style={{ color: 'var(--text-tertiary)' }}>
           All monetary figures are normalised to GBP using the exchange rates recorded in Settings. Figures derived from
           usage or credit top-ups are labelled as estimates wherever they appear.
         </footer>

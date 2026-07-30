@@ -1,6 +1,29 @@
 @import 'tailwindcss';
 
 /* ═══════════════════════════════════════════════════════════════════════════
+   TYPE ROLES
+   ───────────────────────────────────────────────────────────────────────────
+   Three sizes carried real roles without ever having a name. 13px titled every
+   tile, 11px did the work of every caption, hint and footnote (seventy-odd
+   uses), and 10px belonged to the keycaps alone — all written as bracketed
+   arbitrary values. Naming them stops the same role being re-typed slightly
+   differently and drifting: 12px had already been spelt two ways, and 13px
+   two more, so the same role rendered from four different declarations.
+
+   The font stacks live here rather than in :root because Tailwind only reads
+   its theme namespace: declared on :root they generated nothing, and
+   `font-sans` / `font-mono` were quietly resolving to Tailwind's defaults.
+   ═══════════════════════════════════════════════════════════════════════════ */
+@theme {
+  --text-title: 0.8125rem;
+  --text-meta: 0.6875rem;
+  --text-micro: 0.625rem;
+
+  --font-sans: var(--font-inter), ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --font-mono: ui-monospace, 'SF Mono', Menlo, monospace;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
    IMPERIAL EDUTECH — ADAPTIVE DESIGN SYSTEM
    ───────────────────────────────────────────────────────────────────────────
    Every colour in the application derives from three numbers: the brand hue,
@@ -289,8 +312,6 @@
   --radius-xl: 20px;
   --radius-2xl: 26px;
 
-  --font-sans: var(--font-inter), ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif;
-  --font-mono: ui-monospace, 'SF Mono', Menlo, monospace;
 }
 
 html {

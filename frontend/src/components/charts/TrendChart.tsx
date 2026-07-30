@@ -170,7 +170,7 @@ export function TrendChart({
 
       {hoverPoint ? (
         <div
-          className="pointer-events-none absolute z-20 rounded-[var(--radius-sm)] border px-2.5 py-1.5 text-[0.6875rem] shadow-[var(--shadow-md)]"
+          className="pointer-events-none absolute z-20 rounded-[var(--radius-sm)] border px-2.5 py-1.5 text-meta shadow-[var(--shadow-md)]"
           style={{
             left: `min(calc(${(hoverPoint.x / VW) * 100}% + 10px), calc(100% - 150px))`,
             top: 4,

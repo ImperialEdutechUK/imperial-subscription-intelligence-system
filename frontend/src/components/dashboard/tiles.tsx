@@ -296,12 +296,12 @@ export function CardRiskTile({
                     {cover != null ? (
                       <div className="mt-1.5">
                         <Meter value={cover} max={100} tone={tone === 'positive' ? 'positive' : tone} height={5} />
-                        <p className="mt-1 text-[0.6875rem]" style={{ color: 'var(--text-tertiary)' }}>
+                        <p className="mt-1 text-meta" style={{ color: 'var(--text-tertiary)' }}>
                           {formatMoney(c.currentBalance ?? 0)} balance against {formatMoney(c.due30)} due in 30 days
                         </p>
                       </div>
                     ) : (
-                      <p className="mt-1 text-[0.6875rem]" style={{ color: 'var(--text-tertiary)' }}>
+                      <p className="mt-1 text-meta" style={{ color: 'var(--text-tertiary)' }}>
                         {c.riskReason}
                       </p>
                     )}
@@ -396,7 +396,10 @@ export function ObservationsTile({ observations }: { observations: Observation[]
                 </button>
                 {open ? (
                   <div className="px-3 pb-2.5">
-                    <p className="text-xs leading-relaxed" style={{ color: 'var(--text-secondary)' }}>
+                    {/* Observations are the longest prose in the interface and
+                        sit in a full-width tile, so they need the cap the other
+                        prose roles already carry. */}
+                    <p className="max-w-[58ch] text-xs leading-relaxed" style={{ color: 'var(--text-secondary)' }}>
                       {o.body}
                     </p>
                     <div className="mt-2 flex flex-wrap items-center gap-2">

@@ -36,7 +36,7 @@ const VARIANT: Record<Variant, string> = {
 
 const SIZE: Record<Size, string> = {
   xs: 'h-7 px-2 text-xs gap-1 rounded-[var(--radius-xs)]',
-  sm: 'h-8 px-3 text-[0.8125rem] gap-1.5 rounded-[var(--radius-sm)]',
+  sm: 'h-8 px-3 text-title gap-1.5 rounded-[var(--radius-sm)]',
   md: 'h-10 px-4 text-sm gap-2 rounded-[var(--radius-sm)]',
 };
 
@@ -279,7 +279,7 @@ export function Field({
           {error}
         </p>
       ) : hint ? (
-        <p id={hintId} className="text-[0.6875rem] leading-snug" style={{ color: 'var(--text-tertiary)' }}>
+        <p id={hintId} className="text-meta leading-snug" style={{ color: 'var(--text-tertiary)' }}>
           {hint}
         </p>
       ) : null}
@@ -414,7 +414,7 @@ export function Segmented<T extends string>({
             onClick={() => onChange(o.value)}
             className={cn(
               'cursor-pointer rounded-[calc(var(--radius-sm)-2px)] font-medium whitespace-nowrap transition-all duration-150',
-              size === 'xs' ? 'px-2 py-1 text-[0.6875rem]' : 'px-2.5 py-1 text-xs',
+              size === 'xs' ? 'px-2 py-1 text-meta' : 'px-2.5 py-1 text-xs',
               fullWidth && 'flex-1',
             )}
             style={
@@ -659,7 +659,7 @@ export function Modal({
 export function Kbd({ children }: { children: ReactNode }) {
   return (
     <kbd
-      className="inline-flex h-5 min-w-5 items-center justify-center rounded border px-1 font-mono text-[0.625rem]"
+      className="inline-flex h-5 min-w-5 items-center justify-center rounded border px-1 font-mono text-micro"
       style={{ background: 'var(--surface-sunken)', borderColor: 'var(--border-default)', color: 'var(--text-tertiary)' }}
     >
       {children}

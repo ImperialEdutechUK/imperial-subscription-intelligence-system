@@ -84,16 +84,36 @@ export class ApiError extends Error {
   }
 }
 
+/**
+ * What to tell the person at the screen when the API has not supplied a message
+ * of its own.
+ *
+ * The API's own errors are written for the reader and are used as-is. These
+ * cover the cases where all we have is a status code or a transport failure —
+ * where the honest answer is what happened, whether their work survived, and
+ * what to try next. The hostname, the status number and the exception text go
+ * to the server log instead: they help whoever debugs it and mean nothing to a
+ * person trying to record a subscription.
+ */
+function readableFailure(status: number): string {
+  if (status === 401) return 'Your session has ended. Sign in again to continue.';
+  if (status === 503) {
+    return 'Could not reach the register. Nothing has been changed — check your connection and try again.';
+  }
+  return 'The register ran into an unexpected problem. Nothing has been changed. Try again, and let your administrator know if it keeps happening.';
+}
+
 /** Issues the request and parses the JSON body, reviving dates. Throws on failure. */
 export async function api<T>(path: string, opts: ApiOptions = {}): Promise<T> {
   let res: Response;
   try {
     res = await apiRaw(path, opts);
   } catch (e) {
-    throw new ApiError(
-      503,
-      `Could not reach the API service at ${backendUrl()}. ${e instanceof Error ? e.message : ''}`.trim(),
-    );
+    // Resolved before the template so a missing BACKEND_URL cannot throw from
+    // inside this handler and replace the error we are trying to report.
+    const target = process.env.BACKEND_URL ?? '(BACKEND_URL is not set)';
+    console.error(`API request failed: ${opts.method ?? 'GET'} ${target}${path}`, e);
+    throw new ApiError(503, readableFailure(503));
   }
 
   const text = await res.text();
@@ -102,14 +122,15 @@ export async function api<T>(path: string, opts: ApiOptions = {}): Promise<T> {
     try {
       parsed = JSON.parse(text, reviveDates);
     } catch {
-      throw new ApiError(res.status, `The API service returned a response that was not JSON: ${text.slice(0, 120)}`);
+      console.error(`API returned a non-JSON body for ${path} (status ${res.status}):`, text.slice(0, 300));
+      throw new ApiError(res.status, readableFailure(res.status));
     }
   }
 
   if (!res.ok) {
-    const message =
-      (parsed as { error?: string } | null)?.error ?? `The API service returned ${res.status}.`;
-    throw new ApiError(res.status, message);
+    const supplied = (parsed as { error?: string } | null)?.error;
+    if (!supplied) console.error(`API returned ${res.status} with no message for ${path}`);
+    throw new ApiError(res.status, supplied ?? readableFailure(res.status));
   }
 
   return parsed as T;
@@ -127,6 +148,9 @@ export async function apiResult<T extends object>(
   try {
     return await api<T>(path, opts);
   } catch (e) {
-    return { ok: false as const, error: e instanceof Error ? e.message : 'Something went wrong.' };
+    return {
+      ok: false as const,
+      error: e instanceof ApiError ? e.message : readableFailure(500),
+    };
   }
 }

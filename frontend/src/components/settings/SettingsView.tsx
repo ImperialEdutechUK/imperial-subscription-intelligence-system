@@ -157,7 +157,7 @@ export function SettingsView({ data }: { data: SettingsData }) {
 
             {/* Live preview using the candidate colour, before it is committed */}
             <div className="rounded-[var(--radius-md)] border p-3" style={{ ...previewStyle, borderColor: 'var(--border-subtle)' }}>
-              <p className="mb-2 text-[0.6875rem]" style={{ color: 'var(--text-tertiary)' }}>
+              <p className="mb-2 text-meta" style={{ color: 'var(--text-tertiary)' }}>
                 Preview
               </p>
               <div className="flex flex-wrap items-center gap-2">
@@ -180,7 +180,7 @@ export function SettingsView({ data }: { data: SettingsData }) {
 
             {contrast != null ? (
               <div
-                className="flex items-start gap-2 rounded-[var(--radius-sm)] p-2.5 text-[0.6875rem] leading-relaxed"
+                className="flex items-start gap-2 rounded-[var(--radius-sm)] p-2.5 text-meta leading-relaxed"
                 style={{
                   background: contrast >= 4.5 ? 'var(--positive-bg)' : contrast >= 3 ? 'var(--warning-bg)' : 'var(--danger-bg)',
                   color: 'var(--text-secondary)',
@@ -203,7 +203,7 @@ export function SettingsView({ data }: { data: SettingsData }) {
             ) : null}
 
             {hsl && (hsl.h < 340 && hsl.h > 20) ? (
-              <p className="text-[0.6875rem] leading-relaxed" style={{ color: 'var(--text-tertiary)' }}>
+              <p className="text-meta leading-relaxed" style={{ color: 'var(--text-tertiary)' }}>
                 Note: the first chart series takes the brand hue. With a brand colour outside the red range it may sit close to
                 another series colour — worth a glance at the Analytics page after changing it.
               </p>
@@ -254,7 +254,7 @@ export function SettingsView({ data }: { data: SettingsData }) {
             </Field>
 
             <div
-              className="rounded-[var(--radius-sm)] p-2.5 text-[0.6875rem] leading-relaxed"
+              className="rounded-[var(--radius-sm)] p-2.5 text-meta leading-relaxed"
               style={{ background: 'var(--info-bg)', color: 'var(--text-secondary)', border: '1px solid var(--info-border)' }}
             >
               Microsoft retired the old Office 365 &ldquo;Incoming Webhook&rdquo; connector for Teams channels, so a connector URL
@@ -305,7 +305,7 @@ export function SettingsView({ data }: { data: SettingsData }) {
             ) : null}
 
             {testResult ? (
-              <p className="text-[0.6875rem]" style={{ color: 'var(--text-secondary)' }} role="status">
+              <p className="text-meta" style={{ color: 'var(--text-secondary)' }} role="status">
                 {testResult}
               </p>
             ) : null}
@@ -362,7 +362,7 @@ export function SettingsView({ data }: { data: SettingsData }) {
                   <li key={r.code} className="flex items-center justify-between gap-3 py-1.5" style={{ borderBottom: '1px solid var(--border-subtle)' }}>
                     <span className="flex min-w-0 items-center gap-2">
                       <Chip>{r.code}</Chip>
-                      <span className="min-w-0 truncate text-[0.6875rem]" style={{ color: 'var(--text-tertiary)' }}>
+                      <span className="min-w-0 truncate text-meta" style={{ color: 'var(--text-tertiary)' }}>
                         {r.source ?? 'Entered manually'} · {formatDate(r.updatedAt)}
                       </span>
                     </span>
@@ -434,7 +434,7 @@ export function SettingsView({ data }: { data: SettingsData }) {
           <TileBody className="space-y-3">
             {data.authDisabled ? (
               <p
-                className="flex items-start gap-2 rounded-[var(--radius-sm)] p-2.5 text-[0.6875rem] leading-relaxed"
+                className="flex items-start gap-2 rounded-[var(--radius-sm)] p-2.5 text-meta leading-relaxed"
                 style={{ background: 'var(--danger-bg)', color: 'var(--text-secondary)', border: '1px solid var(--danger-border)' }}
               >
                 <AlertTriangle size={13} className="mt-0.5 shrink-0" style={{ color: 'var(--danger)' }} aria-hidden />
@@ -452,7 +452,7 @@ export function SettingsView({ data }: { data: SettingsData }) {
                 <Users size={13} aria-hidden /> People with access
               </p>
               {data.users.length === 0 ? (
-                <p className="text-[0.6875rem]" style={{ color: 'var(--text-tertiary)' }}>
+                <p className="text-meta" style={{ color: 'var(--text-tertiary)' }}>
                   No user accounts exist yet. Run the seed script, or create the first administrator as described in the README.
                 </p>
               ) : (
@@ -463,7 +463,7 @@ export function SettingsView({ data }: { data: SettingsData }) {
                         <span className="block truncate text-xs" style={{ color: 'var(--text-primary)' }}>
                           {u.name}
                         </span>
-                        <span className="block truncate text-[0.6875rem]" style={{ color: 'var(--text-tertiary)' }}>
+                        <span className="block truncate text-meta" style={{ color: 'var(--text-tertiary)' }}>
                           {u.email}
                           {u.lastLoginAt ? ` · last signed in ${formatDate(u.lastLoginAt)}` : ' · never signed in'}
                         </span>
@@ -478,7 +478,7 @@ export function SettingsView({ data }: { data: SettingsData }) {
             </div>
 
             <div
-              className="rounded-[var(--radius-sm)] p-2.5 text-[0.6875rem] leading-relaxed"
+              className="rounded-[var(--radius-sm)] p-2.5 text-meta leading-relaxed"
               style={{ background: 'var(--surface-sunken)', color: 'var(--text-secondary)' }}
             >
               <p className="mb-1 font-semibold" style={{ color: 'var(--text-primary)' }}>

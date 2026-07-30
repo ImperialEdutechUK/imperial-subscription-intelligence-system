@@ -54,7 +54,7 @@ export function LoginForm({ orgName }: { orgName: string }) {
         </Button>
       </form>
 
-      <p className="mt-4 text-center text-[0.6875rem] leading-relaxed" style={{ color: 'var(--text-tertiary)' }}>
+      <p className="mt-4 text-center text-meta leading-relaxed" style={{ color: 'var(--text-tertiary)' }}>
         Accounts are created by an administrator. If you cannot get in, ask whoever set this up rather than trying repeatedly —
         there is no automated password reset.
       </p>

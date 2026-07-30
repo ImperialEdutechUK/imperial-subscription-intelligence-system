@@ -390,7 +390,7 @@ export function CardsWorkbench({ cards, canEdit }: { cards: CardRow[]; canEdit: 
                             showValue
                             height={6}
                           />
-                          <p className="mt-1.5 text-[0.6875rem] leading-relaxed" style={{ color: 'var(--text-tertiary)' }}>
+                          <p className="mt-1.5 text-meta leading-relaxed" style={{ color: 'var(--text-tertiary)' }}>
                             {formatMoney(c.currentBalance, c.currency)} on record
                             {c.balanceUpdatedAt ? `, last updated ${formatDate(c.balanceUpdatedAt)}` : ''}, against{' '}
                             {formatMoney(c.due30)} falling due by then.
@@ -398,14 +398,14 @@ export function CardsWorkbench({ cards, canEdit }: { cards: CardRow[]; canEdit: 
                           </p>
                         </>
                       ) : (
-                        <p className="text-[0.6875rem] leading-relaxed" style={{ color: 'var(--text-tertiary)' }}>
+                        <p className="text-meta leading-relaxed" style={{ color: 'var(--text-tertiary)' }}>
                           {c.currentBalance == null
                             ? 'No balance has been recorded, so cover cannot be shown. Use “Correct balance” to enter what the card actually holds.'
                             : `${formatMoney(c.currentBalance, c.currency)} on record. Nothing falls due on this card in the next 30 days, so there is no cover to measure.`}
                         </p>
                       )}
                       {c.currency !== 'GBP' ? (
-                        <p className="mt-1 text-[0.6875rem] leading-relaxed" style={{ color: 'var(--warning)' }}>
+                        <p className="mt-1 text-meta leading-relaxed" style={{ color: 'var(--warning)' }}>
                           The balance is held in {c.currency} and the amounts due are converted to GBP, so treat the comparison
                           as indicative and check the card before relying on it.
                         </p>

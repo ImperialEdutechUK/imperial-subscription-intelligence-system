@@ -103,7 +103,7 @@ function Section({
             {title}
           </span>
           {description ? (
-            <span className="block text-[0.6875rem]" style={{ color: 'var(--text-tertiary)' }}>
+            <span className="block text-meta" style={{ color: 'var(--text-tertiary)' }}>
               {description}
             </span>
           ) : null}
@@ -484,7 +484,7 @@ export function SubscriptionForm({
             options={ALLOCATION_METHODS.map((m) => ({ value: m, label: ALLOCATION_METHOD_META[m].label, title: ALLOCATION_METHOD_META[m].hint }))}
           />
         </Field>
-        <p className="text-[0.6875rem] leading-relaxed" style={{ color: 'var(--text-tertiary)' }}>
+        <p className="text-meta leading-relaxed" style={{ color: 'var(--text-tertiary)' }}>
           {ALLOCATION_METHOD_META[(v.allocationMethod ?? 'OWNER_PAYS') as (typeof ALLOCATION_METHODS)[number]].hint}
         </p>
 
@@ -520,7 +520,7 @@ export function SubscriptionForm({
                     key={d.id}
                     type="button"
                     onClick={() => toggleDepartment(d.id)}
-                    className={cn('cursor-pointer rounded-full border px-2 py-0.5 text-[0.6875rem] transition-colors')}
+                    className={cn('cursor-pointer rounded-full border px-2 py-0.5 text-meta transition-colors')}
                     style={
                       on
                         ? { background: d.color, borderColor: d.color, color: '#fff' }
@@ -552,7 +552,7 @@ export function SubscriptionForm({
                           onChange={(e) => updateAllocation(a.departmentId, { percentage: e.target.value === '' ? null : Number(e.target.value) })}
                           className="h-8 pr-6 text-right"
                         />
-                        <span className="pointer-events-none absolute top-1/2 right-2 -translate-y-1/2 text-[0.6875rem]" style={{ color: 'var(--text-tertiary)' }}>
+                        <span className="pointer-events-none absolute top-1/2 right-2 -translate-y-1/2 text-meta" style={{ color: 'var(--text-tertiary)' }}>
                           %
                         </span>
                       </div>
@@ -566,12 +566,12 @@ export function SubscriptionForm({
                           onChange={(e) => updateAllocation(a.departmentId, { seats: e.target.value === '' ? null : Number(e.target.value) })}
                           className="h-8 pr-12 text-right"
                         />
-                        <span className="pointer-events-none absolute top-1/2 right-2 -translate-y-1/2 text-[0.6875rem]" style={{ color: 'var(--text-tertiary)' }}>
+                        <span className="pointer-events-none absolute top-1/2 right-2 -translate-y-1/2 text-meta" style={{ color: 'var(--text-tertiary)' }}>
                           seats
                         </span>
                       </div>
                     )}
-                    <span className="tabular w-16 shrink-0 text-right text-[0.6875rem]" style={{ color: 'var(--text-tertiary)' }}>
+                    <span className="tabular w-16 shrink-0 text-right text-meta" style={{ color: 'var(--text-tertiary)' }}>
                       {formatMoney(allocationOutcome.rows.find((r) => r.departmentId === a.departmentId)?.amount ?? 0)}
                     </span>
                   </li>
@@ -580,7 +580,7 @@ export function SubscriptionForm({
             ) : null}
 
             {allocationOutcome.warning ? (
-              <p className="flex items-start gap-1.5 text-[0.6875rem] leading-relaxed" style={{ color: 'var(--warning)' }}>
+              <p className="flex items-start gap-1.5 text-meta leading-relaxed" style={{ color: 'var(--warning)' }}>
                 <AlertTriangle size={12} className="mt-0.5 shrink-0" aria-hidden />
                 {allocationOutcome.warning}
               </p>
@@ -628,7 +628,7 @@ export function SubscriptionForm({
         badge={v.password || initial?.id ? <Chip>Optional</Chip> : undefined}
       >
         <div
-          className="flex items-start gap-2 rounded-[var(--radius-sm)] p-2.5 text-[0.6875rem] leading-relaxed"
+          className="flex items-start gap-2 rounded-[var(--radius-sm)] p-2.5 text-meta leading-relaxed"
           style={{ background: 'var(--info-bg)', color: 'var(--text-secondary)', border: '1px solid var(--info-border)' }}
         >
           <Info size={13} className="mt-0.5 shrink-0" style={{ color: 'var(--info)' }} aria-hidden />

@@ -302,7 +302,16 @@ export function RenewalsView({
           />
           <TileBody>
             {filtered.length === 0 ? (
-              <EmptyState icon={CalendarClock} title="Nothing to plot" description="No payments fall in this period on the current filters." compact />
+              <EmptyState
+                icon={CalendarClock}
+                title="Nothing due in this period"
+                description={
+                  activeFilters > 0
+                    ? 'No payments match the current filters. Clear them to see everything falling due.'
+                    : `No payments fall due in the next ${days} days. Try a longer horizon to see what is coming after that.`
+                }
+                compact
+              />
             ) : (
               <ChartFrame
                 tableOnly
@@ -394,7 +403,7 @@ export function RenewalsView({
                           ) : null}
                         </span>
 
-                        <span className="mt-0.5 flex flex-wrap items-center gap-x-2.5 gap-y-0.5 text-[0.6875rem]" style={{ color: 'var(--text-tertiary)' }}>
+                        <span className="mt-0.5 flex flex-wrap items-center gap-x-2.5 gap-y-0.5 text-meta" style={{ color: 'var(--text-tertiary)' }}>
                           {r.vendor ? <span className="truncate">{r.vendor}</span> : null}
                           <span>
                             {formatDate(r.date)} · {relativeDays(r.days)}
@@ -425,7 +434,7 @@ export function RenewalsView({
                           {formatMoney(r.amountGbp)}
                         </span>
                         {r.currency !== 'GBP' ? (
-                          <span className="block text-[0.6875rem]" style={{ color: 'var(--text-tertiary)' }}>
+                          <span className="block text-meta" style={{ color: 'var(--text-tertiary)' }}>
                             {formatMoney(r.amountNative, r.currency)} {r.currency}
                           </span>
                         ) : null}

@@ -169,7 +169,7 @@ export function CommandPalette({ open, onClose, nav }: { open: boolean; onClose:
                 {row.kind === 'sub' ? (
                   <>
                     <span
-                      className="grid size-7 shrink-0 place-items-center rounded-[var(--radius-xs)] text-[0.625rem] font-semibold"
+                      className="grid size-7 shrink-0 place-items-center rounded-[var(--radius-xs)] text-micro font-semibold"
                       style={{ background: 'var(--brand-50)', color: 'var(--brand-700)' }}
                       aria-hidden
                     >
@@ -179,7 +179,7 @@ export function CommandPalette({ open, onClose, nav }: { open: boolean; onClose:
                       <span className="block truncate text-sm" style={{ color: 'var(--text-primary)' }}>
                         {row.item.name}
                       </span>
-                      <span className="block truncate text-[0.6875rem]" style={{ color: 'var(--text-tertiary)' }}>
+                      <span className="block truncate text-meta" style={{ color: 'var(--text-tertiary)' }}>
                         {[row.item.vendor, row.item.departments.join(', ')].filter(Boolean).join(' · ') || 'Subscription'}
                       </span>
                     </span>
@@ -200,7 +200,7 @@ export function CommandPalette({ open, onClose, nav }: { open: boolean; onClose:
                       <span className="block truncate text-sm" style={{ color: 'var(--text-primary)' }}>
                         {row.item.label}
                       </span>
-                      <span className="block truncate text-[0.6875rem]" style={{ color: 'var(--text-tertiary)' }}>
+                      <span className="block truncate text-meta" style={{ color: 'var(--text-tertiary)' }}>
                         {row.item.hint}
                       </span>
                     </span>

@@ -79,7 +79,7 @@ export function useHoverTooltip() {
 
   const node = tip ? (
     <div
-      className="pointer-events-none absolute z-20 rounded-[var(--radius-sm)] border px-2.5 py-1.5 text-[0.6875rem] leading-relaxed shadow-[var(--shadow-md)]"
+      className="pointer-events-none absolute z-20 rounded-[var(--radius-sm)] border px-2.5 py-1.5 text-meta leading-relaxed shadow-[var(--shadow-md)]"
       style={{
         left: Math.max(4, Math.min(tip.x + 12, tip.width - 190)),
         top: Math.max(4, tip.y - 10),
@@ -187,7 +187,7 @@ export function RankedBars({
                 style={{ minHeight: 24 }}
               >
                 <span
-                  className="shrink-0 truncate text-[0.6875rem]"
+                  className="shrink-0 truncate text-meta"
                   style={{ width: labelWidth, color: 'var(--text-secondary)' }}
                   title={d.label}
                 >
@@ -207,7 +207,7 @@ export function RankedBars({
                   </svg>
                 </span>
                 {showValues ? (
-                  <span className="tabular shrink-0 text-[0.6875rem] font-medium" style={{ color: 'var(--text-primary)', minWidth: 62, textAlign: 'right' }}>
+                  <span className="tabular shrink-0 text-meta font-medium" style={{ color: 'var(--text-primary)', minWidth: 62, textAlign: 'right' }}>
                     {formatValue(d.value)}
                   </span>
                 ) : null}
@@ -266,7 +266,7 @@ export function DivergingBars({
               }
               onMouseLeave={hide}
             >
-              <span className="truncate text-[0.6875rem]" style={{ color: 'var(--text-secondary)' }} title={d.label}>
+              <span className="truncate text-meta" style={{ color: 'var(--text-secondary)' }} title={d.label}>
                 {d.label}
               </span>
               <span className="relative block h-[18px]">
@@ -283,7 +283,7 @@ export function DivergingBars({
                 </svg>
               </span>
               <span
-                className="tabular text-right text-[0.6875rem] font-medium"
+                className="tabular text-right text-meta font-medium"
                 style={{ color: positive ? 'var(--danger)' : 'var(--positive)' }}
               >
                 {positive ? '+' : ''}

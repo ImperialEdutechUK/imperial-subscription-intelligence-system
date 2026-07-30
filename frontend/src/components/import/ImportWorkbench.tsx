@@ -88,7 +88,7 @@ function Panel({
     >
       <header className="flex flex-wrap items-start justify-between gap-3 px-4 pt-4 pb-2">
         <div className="min-w-0">
-          <h3 className="text-[0.8125rem] font-semibold tracking-tight" style={{ color: 'var(--text-primary)' }}>
+          <h3 className="text-title font-semibold tracking-tight" style={{ color: 'var(--text-primary)' }}>
             {title}
           </h3>
           {description ? (
@@ -218,16 +218,16 @@ function PreviewTable({
       <table className="w-full" style={{ fontSize: 'var(--density-font)' }}>
         <thead>
           <tr style={{ borderBottom: '1px solid var(--border-subtle)' }}>
-            <th className="px-2 py-2 text-left text-[0.6875rem] font-medium" style={{ color: 'var(--text-tertiary)' }}>
+            <th className="px-2 py-2 text-left text-meta font-medium" style={{ color: 'var(--text-tertiary)' }}>
               Row
             </th>
             {headers.map((header, i) => (
               <th key={`${header}-${i}`} className="px-2 py-2 text-left">
-                <span className="block truncate text-[0.6875rem] font-medium" style={{ color: 'var(--text-tertiary)' }}>
+                <span className="block truncate text-meta font-medium" style={{ color: 'var(--text-tertiary)' }}>
                   {header}
                 </span>
                 <span
-                  className="block truncate text-[0.6875rem]"
+                  className="block truncate text-meta"
                   style={{ color: mapping[i] ? 'var(--text-primary)' : 'var(--text-tertiary)' }}
                 >
                   {mapping[i] ? IMPORT_FIELD_META[mapping[i]!].label : 'Ignored'}
@@ -242,7 +242,7 @@ function PreviewTable({
             const skipped = prepared.rows[r]?.skipped;
             return (
               <tr key={rowNumber} style={{ borderBottom: '1px solid var(--border-subtle)' }}>
-                <td className="tabular px-2 py-1.5 text-[0.6875rem]" style={{ color: skipped ? 'var(--danger)' : 'var(--text-tertiary)' }}>
+                <td className="tabular px-2 py-1.5 text-meta" style={{ color: skipped ? 'var(--danger)' : 'var(--text-tertiary)' }}>
                   {rowNumber}
                 </td>
                 {headers.map((header, c) => {
@@ -251,7 +251,7 @@ function PreviewTable({
                   return (
                     <td
                       key={`${header}-${c}`}
-                      className="max-w-[220px] truncate px-2 py-1.5 text-[0.75rem]"
+                      className="max-w-[220px] truncate px-2 py-1.5 text-xs"
                       title={issue ? issue.message : undefined}
                       style={{
                         background: issue ? (issue.blocking ? 'var(--danger-bg)' : 'var(--warning-bg)') : undefined,
@@ -274,7 +274,7 @@ function PreviewTable({
         </tbody>
       </table>
       {rows.length > shown.length ? (
-        <p className="px-2 pt-2 text-[0.6875rem]" style={{ color: 'var(--text-tertiary)' }}>
+        <p className="px-2 pt-2 text-meta" style={{ color: 'var(--text-tertiary)' }}>
           Showing the first {shown.length} of {rows.length} rows. Every row is checked, not only the ones shown.
         </p>
       ) : null}
@@ -666,7 +666,7 @@ export function ImportWorkbench({
                   Start again
                 </Button>
               ) : null}
-              <span className="text-[0.6875rem]" style={{ color: 'var(--text-tertiary)' }}>
+              <span className="text-meta" style={{ color: 'var(--text-tertiary)' }}>
                 Pasting replaces whatever is in the box and reads the rows straight away. Nothing is saved until you
                 choose to import.
               </span>
@@ -824,7 +824,7 @@ export function ImportWorkbench({
         </div>
       ) : null}
 
-      <p className="flex items-start gap-1.5 px-1 text-[0.6875rem] leading-relaxed" style={{ color: 'var(--text-tertiary)' }}>
+      <p className="flex items-start gap-1.5 px-1 text-meta leading-relaxed" style={{ color: 'var(--text-tertiary)' }}>
         <Lock size={12} className="mt-0.5 shrink-0" aria-hidden />
         <span>
           Passwords in an imported column are encrypted before they are stored and are never included in any export. The

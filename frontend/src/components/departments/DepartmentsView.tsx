@@ -184,7 +184,7 @@ export function DepartmentsView({
               <TileBody className="flex flex-col gap-3">
                 <div className="grid grid-cols-2 gap-3">
                   <div>
-                    <p className="text-[0.6875rem]" style={{ color: 'var(--text-tertiary)' }}>
+                    <p className="text-meta" style={{ color: 'var(--text-tertiary)' }}>
                       Monthly
                     </p>
                     <p className="tabular text-lg font-semibold" style={{ color: 'var(--text-primary)' }}>
@@ -192,7 +192,7 @@ export function DepartmentsView({
                     </p>
                   </div>
                   <div>
-                    <p className="text-[0.6875rem]" style={{ color: 'var(--text-tertiary)' }}>
+                    <p className="text-meta" style={{ color: 'var(--text-tertiary)' }}>
                       Annual
                     </p>
                     <p className="tabular text-lg font-semibold" style={{ color: 'var(--text-primary)' }}>
@@ -223,7 +223,7 @@ export function DepartmentsView({
                 {d.topSubscriptions.length ? (
                   <ul className="mt-auto space-y-1">
                     {d.topSubscriptions.slice(0, 4).map((s) => (
-                      <li key={s.id} className="flex items-center justify-between gap-2 text-[0.6875rem]">
+                      <li key={s.id} className="flex items-center justify-between gap-2 text-meta">
                         <span className="min-w-0 truncate" style={{ color: 'var(--text-secondary)' }}>
                           {s.name}
                           {s.shared ? (
@@ -237,7 +237,7 @@ export function DepartmentsView({
                     ))}
                   </ul>
                 ) : (
-                  <p className="mt-auto text-[0.6875rem]" style={{ color: 'var(--text-tertiary)' }}>
+                  <p className="mt-auto text-meta" style={{ color: 'var(--text-tertiary)' }}>
                     No subscriptions attached yet.
                   </p>
                 )}
@@ -341,7 +341,7 @@ export function DepartmentsView({
           <div className="space-y-4">
             <div className="grid grid-cols-2 gap-3">
               <div className="rounded-[var(--radius-md)] border p-3" style={{ borderColor: 'var(--border-subtle)' }}>
-                <p className="text-[0.6875rem]" style={{ color: 'var(--text-tertiary)' }}>
+                <p className="text-meta" style={{ color: 'var(--text-tertiary)' }}>
                   Monthly
                 </p>
                 <p className="tabular mt-0.5 text-xl font-semibold" style={{ color: 'var(--text-primary)' }}>
@@ -349,7 +349,7 @@ export function DepartmentsView({
                 </p>
               </div>
               <div className="rounded-[var(--radius-md)] border p-3" style={{ borderColor: 'var(--border-subtle)' }}>
-                <p className="text-[0.6875rem]" style={{ color: 'var(--text-tertiary)' }}>
+                <p className="text-meta" style={{ color: 'var(--text-tertiary)' }}>
                   Annual
                 </p>
                 <p className="tabular mt-0.5 text-xl font-semibold" style={{ color: 'var(--text-primary)' }}>

@@ -334,14 +334,14 @@ export function SubscriptionWorkbench({
             <table className="w-full" style={{ fontSize: 'var(--density-font)' }}>
               <thead>
                 <tr style={{ borderBottom: '1px solid var(--border-subtle)' }}>
-                  <th className="px-3 py-2 text-left text-[0.6875rem]">{sortButton('name', 'Software')}</th>
-                  <th className="hidden px-3 py-2 text-left text-[0.6875rem] lg:table-cell">{sortButton('category', 'Category')}</th>
-                  <th className="px-3 py-2 text-left text-[0.6875rem]">{sortButton('department', 'Departments')}</th>
-                  <th className="hidden px-3 py-2 text-left text-[0.6875rem] md:table-cell">Billing</th>
-                  <th className="px-3 py-2 text-right text-[0.6875rem]">{sortButton('monthlyGbp', 'Monthly', 'ml-auto')}</th>
-                  <th className="hidden px-3 py-2 text-right text-[0.6875rem] sm:table-cell">{sortButton('annualGbp', 'Annual', 'ml-auto')}</th>
-                  <th className="px-3 py-2 text-left text-[0.6875rem]">{sortButton('renewal', 'Renews')}</th>
-                  <th className="px-3 py-2 text-right text-[0.6875rem]" style={{ color: 'var(--text-tertiary)' }}>
+                  <th className="px-3 py-2 text-left text-meta">{sortButton('name', 'Software')}</th>
+                  <th className="hidden px-3 py-2 text-left text-meta lg:table-cell">{sortButton('category', 'Category')}</th>
+                  <th className="px-3 py-2 text-left text-meta">{sortButton('department', 'Departments')}</th>
+                  <th className="hidden px-3 py-2 text-left text-meta md:table-cell">Billing</th>
+                  <th className="px-3 py-2 text-right text-meta">{sortButton('monthlyGbp', 'Monthly', 'ml-auto')}</th>
+                  <th className="hidden px-3 py-2 text-right text-meta sm:table-cell">{sortButton('annualGbp', 'Annual', 'ml-auto')}</th>
+                  <th className="px-3 py-2 text-left text-meta">{sortButton('renewal', 'Renews')}</th>
+                  <th className="px-3 py-2 text-right text-meta" style={{ color: 'var(--text-tertiary)' }}>
                     <span className="sr-only">Actions</span>
                   </th>
                 </tr>
@@ -372,7 +372,7 @@ export function SubscriptionWorkbench({
                               {r.hasPassword ? <KeyRound size={11} style={{ color: 'var(--text-tertiary)' }} aria-label="Password stored" /> : null}
                             </span>
                             {r.vendor ? (
-                              <span className="block truncate text-[0.6875rem]" style={{ color: 'var(--text-tertiary)' }}>
+                              <span className="block truncate text-meta" style={{ color: 'var(--text-tertiary)' }}>
                                 {r.vendor}
                               </span>
                             ) : null}
@@ -380,7 +380,7 @@ export function SubscriptionWorkbench({
                         </div>
                       </td>
                       <td className="hidden px-3 py-1.5 lg:table-cell">
-                        <span className="text-[0.6875rem]" style={{ color: 'var(--text-secondary)' }}>
+                        <span className="text-meta" style={{ color: 'var(--text-secondary)' }}>
                           {r.categoryLabel}
                         </span>
                       </td>
@@ -389,7 +389,7 @@ export function SubscriptionWorkbench({
                           {r.allocations.slice(0, 3).map((a) => (
                             <span
                               key={a.departmentId}
-                              className="rounded-full px-1.5 py-0.5 text-[0.625rem] font-medium"
+                              className="rounded-full px-1.5 py-0.5 text-micro font-medium"
                               style={{ background: `color-mix(in srgb, ${a.color} 14%, transparent)`, color: a.color }}
                               title={`${a.departmentName} — ${formatMoney(a.monthlyGbp)}/month (${(a.share * 100).toFixed(0)}%)`}
                             >
@@ -398,14 +398,14 @@ export function SubscriptionWorkbench({
                             </span>
                           ))}
                           {r.allocations.length > 3 ? (
-                            <span className="text-[0.625rem]" style={{ color: 'var(--text-tertiary)' }}>
+                            <span className="text-micro" style={{ color: 'var(--text-tertiary)' }}>
                               +{r.allocations.length - 3}
                             </span>
                           ) : null}
                         </span>
                       </td>
                       <td className="hidden px-3 py-1.5 md:table-cell">
-                        <span className="text-[0.6875rem]" style={{ color: 'var(--text-secondary)' }}>
+                        <span className="text-meta" style={{ color: 'var(--text-secondary)' }}>
                           {r.billingLabel}
                           {r.perSeat ? ` · ${r.seats} seats` : ''}
                         </span>
@@ -430,7 +430,7 @@ export function SubscriptionWorkbench({
                         {r.oneOffGbp > 0 ? (
                           <span title="Paid once, not recurring. Counted in twelve-month cash but not in the run-rate.">
                             {formatMoney(r.oneOffGbp)}{' '}
-                            <span className="text-[0.625rem]" style={{ color: 'var(--text-tertiary)' }}>
+                            <span className="text-micro" style={{ color: 'var(--text-tertiary)' }}>
                               once
                             </span>
                           </span>
@@ -440,11 +440,11 @@ export function SubscriptionWorkbench({
                       </td>
                       <td className="px-3 py-1.5">
                         {r.status === 'CANCELLED' || r.daysToRenewal == null ? (
-                          <span className="text-[0.6875rem]" style={{ color: 'var(--text-tertiary)' }}>
+                          <span className="text-meta" style={{ color: 'var(--text-tertiary)' }}>
                             —
                           </span>
                         ) : (
-                          <span className="text-[0.6875rem]" style={{ color: urgent ? 'var(--danger)' : 'var(--text-secondary)', fontWeight: urgent ? 600 : 400 }}>
+                          <span className="text-meta" style={{ color: urgent ? 'var(--danger)' : 'var(--text-secondary)', fontWeight: urgent ? 600 : 400 }}>
                             {relativeDays(r.daysToRenewal)}
                           </span>
                         )}
@@ -511,7 +511,7 @@ export function SubscriptionWorkbench({
           <div className="space-y-4">
             <div className="grid grid-cols-2 gap-3">
               <div className="rounded-[var(--radius-md)] border p-3" style={{ borderColor: 'var(--border-subtle)' }}>
-                <p className="text-[0.6875rem]" style={{ color: 'var(--text-tertiary)' }}>
+                <p className="text-meta" style={{ color: 'var(--text-tertiary)' }}>
                   Monthly
                 </p>
                 <p className="tabular mt-0.5 text-xl font-semibold" style={{ color: 'var(--text-primary)' }}>
@@ -519,7 +519,7 @@ export function SubscriptionWorkbench({
                 </p>
               </div>
               <div className="rounded-[var(--radius-md)] border p-3" style={{ borderColor: 'var(--border-subtle)' }}>
-                <p className="text-[0.6875rem]" style={{ color: 'var(--text-tertiary)' }}>
+                <p className="text-meta" style={{ color: 'var(--text-tertiary)' }}>
                   Annual
                 </p>
                 <p className="tabular mt-0.5 text-xl font-semibold" style={{ color: 'var(--text-primary)' }}>

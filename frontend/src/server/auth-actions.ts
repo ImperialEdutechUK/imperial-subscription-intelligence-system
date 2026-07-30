@@ -32,11 +32,16 @@ export async function signIn(_prev: { error?: string } | null, formData: FormDat
     // accounts. Anything that is not a 401 is a configuration problem, and
     // saying so saves an afternoon of guessing.
     if (e instanceof ApiError && e.status === 401) return { error: 'Those details were not recognised.' };
+
+    // The cause matters to whoever maintains this, not to the person trying to
+    // sign in — they can only wait or ask. It goes to the log; they get the one
+    // thing they can act on.
+    console.error('Sign-in failed for a reason other than bad credentials:', e);
     return {
       error:
         e instanceof ApiError && e.status === 503
-          ? 'The interface could not reach the API service. Check BACKEND_URL and that the API is running.'
-          : 'Sign-in failed because of a server problem. Check the service configuration and try again.',
+          ? 'Could not reach the register. Check your connection and try again in a moment.'
+          : 'Sign-in is unavailable at the moment. Try again shortly, and let your administrator know if it continues.',
     };
   }
 
