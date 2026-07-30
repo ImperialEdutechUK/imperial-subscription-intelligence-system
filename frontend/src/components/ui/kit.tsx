@@ -47,6 +47,9 @@ export function BentoTile({ children, col = 4, row, className, accent, interacti
       className={cn('bento-tile', className)}
       data-accent={accent ? 'true' : undefined}
       data-interactive={interactive ? 'true' : undefined}
+      // Exposed so the breakpoint rules in globals.css can re-tier the span;
+      // the inline grid-column below is unreachable from a stylesheet.
+      data-col={col}
       style={{
         gridColumn: `span ${col} / span ${col}`,
         gridRow: row ? `span ${row} / span ${row}` : undefined,

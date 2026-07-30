@@ -105,15 +105,19 @@ export function DepartmentTile({
           <ChartFrame
             tableOnly
             caption="Shared subscriptions are split by the method set on each one, so these figures reconcile to the portfolio total exactly."
+            // Decimals are fixed per column rather than left to the default,
+            // which picks them per value and printed "£3,083" directly above
+            // "£906.45" in the same column. Whole pounds for the spend columns;
+            // per-head keeps its pence, where a pound is a lot.
             table={
               <MiniTable
                 head={['Department', 'Monthly', 'Annual', 'Subs', 'Per head']}
                 rows={data.map((d) => [
                   d.name,
-                  formatMoney(d.monthlyGbp),
-                  formatMoney(d.monthlyGbp * 12),
+                  formatMoney(d.monthlyGbp, 'GBP', { decimals: 0 }),
+                  formatMoney(d.monthlyGbp * 12, 'GBP', { decimals: 0 }),
                   d.subscriptionCount,
-                  d.perHeadMonthly != null ? formatMoney(d.perHeadMonthly) : '—',
+                  d.perHeadMonthly != null ? formatMoney(d.perHeadMonthly, 'GBP', { decimals: 2 }) : '—',
                 ])}
               />
             }
@@ -539,7 +543,10 @@ export function HeadlineTiles({
       </BentoTile>
 
       <BentoTile col={12} row={1}>
-        <TileBody className="flex flex-row items-center gap-4 pt-3">
+        {/* Stacks below `sm`. Held as one row, the label and meter were
+            squeezed to nothing while the fixed-width legend kept its space and
+            printed straight over them. */}
+        <TileBody className="flex flex-col items-stretch gap-3 pt-3 sm:flex-row sm:items-center sm:gap-4">
           <div className="min-w-0 flex-1">
             <div className="flex items-center gap-2">
               <p className="text-xs font-medium" style={{ color: 'var(--text-secondary)' }}>
@@ -561,7 +568,7 @@ export function HeadlineTiles({
               <Meter value={monthly - estimatedAmount} max={monthly || 1} tone="positive" height={7} />
             </div>
           </div>
-          <div className="flex shrink-0 items-center gap-4 text-xs">
+          <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-xs sm:shrink-0">
             <span className="flex items-center gap-1.5">
               <span className="size-2 rounded-full" style={{ background: 'var(--positive)' }} aria-hidden />
               <span style={{ color: 'var(--text-secondary)' }}>

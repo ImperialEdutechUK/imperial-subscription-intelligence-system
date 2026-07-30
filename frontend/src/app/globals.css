@@ -371,6 +371,32 @@ body {
   }
 }
 
+/* Narrowing the grid above is only half the job. BentoTile writes its span as
+   an inline `grid-column`, and an inline style cannot be overridden by a
+   stylesheet without `!important`. Left alone the spans survive every
+   breakpoint, and because a `span 4` tile in a two-column grid forces four
+   *implicit* columns, the grid quietly grows back to twelve tracks — about
+   23px each on a 390px phone, which is what clipped every headline figure to
+   "£5…". These rules re-tier the spans so the collapse actually lands. */
+@media (max-width: 900px) {
+  .bento-tile {
+    grid-column: span 4 / span 4 !important;
+  }
+  /* Narrow tiles keep a two-up rhythm rather than becoming a single column too early. */
+  .bento-tile[data-col='2'],
+  .bento-tile[data-col='3'] {
+    grid-column: span 2 / span 2 !important;
+  }
+}
+@media (max-width: 620px) {
+  .bento-tile {
+    grid-column: span 2 / span 2 !important;
+    /* Authored row spans reserve height for a wide layout; on one column the
+       content decides instead, so tiles neither stretch nor clip. */
+    grid-row: auto !important;
+  }
+}
+
 .bento-tile {
   position: relative;
   display: flex;

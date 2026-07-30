@@ -247,6 +247,19 @@ export function formatMoney(
   if (!Number.isFinite(n)) return '—';
   const { decimals, compact } = opts;
 
+  // Below £1,000 there is nothing to abbreviate, but the caller still asked for
+  // a compact figure — an axis or a legend. Falling through to the default
+  // below would print two decimals, which is how a tick reading "£0.00" ended
+  // up sitting under "£2K", "£4K" and "£6K" on the same axis.
+  if (compact && Math.abs(n) < 1000) {
+    return new Intl.NumberFormat('en-GB', {
+      style: 'currency',
+      currency,
+      minimumFractionDigits: 0,
+      maximumFractionDigits: 0,
+    }).format(n);
+  }
+
   if (compact && Math.abs(n) >= 1000) {
     // Deliberately hand-rolled rather than using Intl's `notation: 'compact'`.
     // Node and Chrome disagree on the output for the same input — Node renders

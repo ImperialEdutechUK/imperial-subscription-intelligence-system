@@ -20,6 +20,8 @@ import {
   Upload,
   CalendarClock,
   LogOut,
+  Menu,
+  X,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { IconButton, Kbd } from '@/components/ui/controls';
@@ -64,6 +66,7 @@ export function AppShell({
   const [density, setDensity] = useState<Density>(initialDensity);
   const [collapsed, setCollapsed] = useState(initialCollapsed);
   const [paletteOpen, setPaletteOpen] = useState(false);
+  const [navOpen, setNavOpen] = useState(false);
 
   // Light unless the person has explicitly asked for dark. The operating
   // system's preference is deliberately not consulted: this is a shared
@@ -119,6 +122,16 @@ export function AppShell({
     document.addEventListener('keydown', onKey);
     return () => document.removeEventListener('keydown', onKey);
   }, [toggleCollapsed]);
+
+  // Closing on click covers the ordinary case; this also catches back/forward,
+  // which would otherwise leave the panel open over the page it navigated to.
+  // Adjusting during render rather than in an effect: React re-runs this pass
+  // before painting, so the panel never flashes on the new route.
+  const [navPathname, setNavPathname] = useState(pathname);
+  if (navPathname !== pathname) {
+    setNavPathname(pathname);
+    setNavOpen(false);
+  }
 
   const active = (href: string) => (href === '/' ? pathname === '/' : pathname.startsWith(href));
   const current = NAV.find((n) => active(n.href));
@@ -244,6 +257,19 @@ export function AppShell({
           className="no-print sticky top-0 z-40 flex h-14 items-center gap-3 px-4 backdrop-blur-md md:px-6"
           style={{ background: 'color-mix(in srgb, var(--surface-canvas) 88%, transparent)', borderBottom: '1px solid var(--border-subtle)' }}
         >
+          {/* The sidebar is hidden below `md`. Without this the only reachable
+              page on a phone is the one already open. */}
+          <button
+            onClick={() => setNavOpen((v) => !v)}
+            aria-label={navOpen ? 'Close menu' : 'Open menu'}
+            aria-expanded={navOpen}
+            aria-controls="mobile-nav"
+            className="-ml-1 grid size-9 shrink-0 cursor-pointer place-items-center rounded-[var(--radius-sm)] transition-colors hover:bg-[var(--surface-hover)] md:hidden"
+            style={{ color: 'var(--text-secondary)' }}
+          >
+            {navOpen ? <X size={18} strokeWidth={2} aria-hidden /> : <Menu size={18} strokeWidth={2} aria-hidden />}
+          </button>
+
           <h1 className="truncate text-sm font-semibold tracking-tight" style={{ color: 'var(--text-primary)' }}>
             {current?.label ?? 'Subscription Intelligence'}
           </h1>
@@ -283,6 +309,53 @@ export function AppShell({
             ) : null}
           </div>
         </header>
+
+        {/* Mobile navigation. A panel under the header rather than an overlay
+            drawer: it needs no focus trap, no scroll lock and no backdrop, and
+            it cannot strand someone behind a scrim on a small screen. */}
+        {navOpen ? (
+          <nav
+            id="mobile-nav"
+            aria-label="Primary"
+            className="no-print sticky top-14 z-30 md:hidden"
+            style={{ background: 'var(--surface-raised)', borderBottom: '1px solid var(--border-subtle)', boxShadow: 'var(--shadow-md)' }}
+          >
+            <ul className="space-y-0.5 p-2">
+              {NAV.map((item) => {
+                const isActive = active(item.href);
+                const Icon = item.icon;
+                return (
+                  <li key={item.href}>
+                    <Link
+                      href={item.href}
+                      onClick={() => setNavOpen(false)}
+                      aria-current={isActive ? 'page' : undefined}
+                      className="flex items-center gap-3 rounded-[var(--radius-sm)] px-3 py-2.5 text-sm font-medium transition-colors"
+                      style={
+                        isActive
+                          ? { background: 'var(--brand-50)', color: 'var(--brand-700)' }
+                          : { color: 'var(--text-secondary)' }
+                      }
+                    >
+                      <Icon size={17} strokeWidth={2} aria-hidden className="shrink-0" />
+                      <span className="min-w-0 flex-1 truncate">{item.label}</span>
+                    </Link>
+                  </li>
+                );
+              })}
+            </ul>
+            {user ? (
+              <div
+                className="flex items-center justify-between gap-3 px-5 py-3"
+                style={{ borderTop: '1px solid var(--border-subtle)' }}
+              >
+                <span className="min-w-0 truncate text-xs" style={{ color: 'var(--text-tertiary)' }}>
+                  {user.name} · {user.role.charAt(0) + user.role.slice(1).toLowerCase()}
+                </span>
+              </div>
+            ) : null}
+          </nav>
+        ) : null}
 
         <main className="min-w-0 flex-1 px-4 py-5 md:px-6 md:py-6">{children}</main>
 
