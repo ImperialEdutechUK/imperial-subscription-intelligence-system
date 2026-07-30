@@ -1,0 +1,277 @@
+// Imperial Edutech — Subscription Intelligence Platform
+// ---------------------------------------------------------------------------
+// PostgreSQL, in development as well as production.
+//
+// Running a different database locally is how "it worked on my machine" starts,
+// and the committed migration in prisma/migrations is PostgreSQL-specific. Point
+// DATABASE_URL at a local instance (Docker is one line — see DEVELOPER-GUIDE.md)
+// or at a free hosted development database.
+//
+// The application picks its driver from the shape of DATABASE_URL at runtime,
+// so nothing else needs changing between environments.
+// ---------------------------------------------------------------------------
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+// ─────────────────────────────────────────────────────────── Organisation ──
+
+model Department {
+  id         String   @id @default(cuid())
+  name       String   @unique
+  code       String   @unique
+  colorHex   String   @default("#DA291C")
+  costCentre String?
+  headName   String?
+  headEmail  String?
+  headcount  Int?
+  active     Boolean  @default(true)
+  sortOrder  Int      @default(0)
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  allocations        Allocation[]
+  ownedSubscriptions Subscription[] @relation("OwnerDepartment")
+}
+
+// ────────────────────────────────────────────────────────── Payment cards ──
+
+model Card {
+  id                  String    @id @default(cuid())
+  label               String
+  last4               String
+  provider            String? // Visa / Mastercard / Amex / Direct Debit
+  type                String    @default("CORPORATE_CREDIT") // CORPORATE_CREDIT | PREPAID | DEBIT | DIRECT_DEBIT | INVOICE | PERSONAL_REIMBURSED
+  holderName          String?
+  currency            String    @default("GBP")
+  // Prepaid / top-up cards: tracking the float is what drives top-up alerts
+  currentBalance      Float?
+  balanceUpdatedAt    DateTime?
+  lowBalanceThreshold Float     @default(0)
+  expiryMonth         Int?
+  expiryYear          Int?
+  notes               String?
+  active              Boolean   @default(true)
+  createdAt           DateTime  @default(now())
+  updatedAt           DateTime  @updatedAt
+
+  subscriptions Subscription[]
+  topUps        CardTopUp[]
+  charges       Charge[]
+}
+
+model CardTopUp {
+  id          String   @id @default(cuid())
+  cardId      String
+  amount      Float
+  currency    String   @default("GBP")
+  occurredAt  DateTime
+  requestedBy String?
+  approvedBy  String?
+  note        String?
+  createdAt   DateTime @default(now())
+
+  card Card @relation(fields: [cardId], references: [id], onDelete: Cascade)
+
+  @@index([cardId, occurredAt])
+}
+
+// ───────────────────────────────────────────────────────────── Core entity ──
+
+model Subscription {
+  id          String  @id @default(cuid())
+  name        String
+  vendor      String?
+  url         String?
+  category    String  @default("OTHER")
+  description String?
+  status      String  @default("ACTIVE") // ACTIVE | TRIAL | PAUSED | CANCELLED | PENDING
+  criticality String  @default("MEDIUM") // LOW | MEDIUM | HIGH | CRITICAL
+
+  // ── Access (see SECURITY.md — passwords are obfuscated, not securely encrypted)
+  accountEmail       String?
+  username           String?
+  passwordCipher     String?
+  passwordUpdatedAt  DateTime?
+  credentialLocation String?
+  mfaNotes           String?
+
+  // ── Payment instrument
+  cardId String?
+
+  // ── Commercials
+  billingModel String  @default("MONTHLY") // WEEKLY | MONTHLY | QUARTERLY | BIANNUAL | ANNUAL | ONE_OFF | PAY_PER_USE | TOPUP_CREDIT | FREE
+  currency     String  @default("GBP")
+  unitAmount   Float   @default(0)
+  seats        Int     @default(1)
+  perSeat      Boolean @default(false)
+
+  // ── Usage-based / credit top-up specifics
+  usageUnitLabel           String?
+  usageRatePerUnit         Float?
+  estimatedMonthlyUnits    Float?
+  topUpAmount              Float?
+  topUpThreshold           Float?
+  creditBalance            Float?
+  creditBalanceUpdatedAt   DateTime?
+
+  // ── Dates & contract
+  startDate        DateTime?
+  renewalDate      DateTime?
+  contractEndDate  DateTime?
+  autoRenew        Boolean   @default(true)
+  noticePeriodDays Int       @default(0)
+  cancellationUrl  String?
+
+  // ── Ownership & departmental split
+  allocationMethod  String  @default("OWNER_PAYS") // PERCENTAGE | SEATS | OWNER_PAYS
+  ownerDepartmentId String?
+  ownerName         String?
+  ownerEmail        String?
+
+  notes     String?
+  tags      String? // comma-separated
+  archived  Boolean  @default(false)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  ownerDepartment Department?   @relation("OwnerDepartment", fields: [ownerDepartmentId], references: [id])
+  card            Card?         @relation(fields: [cardId], references: [id])
+  allocations     Allocation[]
+  costChanges     CostChange[]
+  charges         Charge[]
+  usageRecords    UsageRecord[]
+
+  @@index([status, archived])
+  @@index([renewalDate])
+  @@index([category])
+}
+
+model Allocation {
+  id             String  @id @default(cuid())
+  subscriptionId String
+  departmentId   String
+  percentage     Float? // used when allocationMethod = PERCENTAGE
+  seats          Int? // used when allocationMethod = SEATS
+  note           String?
+
+  subscription Subscription @relation(fields: [subscriptionId], references: [id], onDelete: Cascade)
+  department   Department   @relation(fields: [departmentId], references: [id], onDelete: Cascade)
+
+  @@unique([subscriptionId, departmentId])
+  @@index([departmentId])
+}
+
+// ────────────────────────────────────────────── Price history (audit trail) ──
+
+model CostChange {
+  id             String   @id @default(cuid())
+  subscriptionId String
+  effectiveDate  DateTime
+  previousAmount Float?
+  newAmount      Float
+  previousModel  String?
+  newModel       String?
+  currency       String   @default("GBP")
+  reason         String?
+  recordedBy     String?
+  createdAt      DateTime @default(now())
+
+  subscription Subscription @relation(fields: [subscriptionId], references: [id], onDelete: Cascade)
+
+  @@index([subscriptionId, effectiveDate])
+  @@index([effectiveDate])
+}
+
+// ───────────────────────────────────────────────── Payment ledger / calendar ──
+
+model Charge {
+  id             String    @id @default(cuid())
+  subscriptionId String
+  cardId         String?
+  dueDate        DateTime
+  amount         Float
+  currency       String    @default("GBP")
+  status         String    @default("SCHEDULED") // SCHEDULED | DUE | PAID | OVERDUE | FAILED | WAIVED
+  paidDate       DateTime?
+  invoiceRef     String?
+  note           String?
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+
+  subscription Subscription @relation(fields: [subscriptionId], references: [id], onDelete: Cascade)
+  card         Card?        @relation(fields: [cardId], references: [id])
+
+  @@index([dueDate, status])
+  @@index([subscriptionId])
+}
+
+model UsageRecord {
+  id             String   @id @default(cuid())
+  subscriptionId String
+  periodStart    DateTime
+  periodEnd      DateTime
+  units          Float?
+  amount         Float
+  currency       String   @default("GBP")
+  note           String?
+  createdAt      DateTime @default(now())
+
+  subscription Subscription @relation(fields: [subscriptionId], references: [id], onDelete: Cascade)
+
+  @@index([subscriptionId, periodEnd])
+}
+
+// ───────────────────────────────────────────────────────────────── Support ──
+
+model FxRate {
+  code      String   @id // ISO 4217, e.g. USD
+  rateToGbp Float // 1 unit of `code` = rateToGbp GBP
+  source    String? // where the rate came from — user-entered by default
+  updatedAt DateTime @updatedAt
+}
+
+model Setting {
+  key       String   @id
+  value     String
+  updatedAt DateTime @updatedAt
+}
+
+model User {
+  id           String    @id @default(cuid())
+  email        String    @unique
+  name         String
+  passwordHash String
+  role         String    @default("VIEWER") // ADMIN | EDITOR | VIEWER
+  active       Boolean   @default(true)
+  lastLoginAt  DateTime?
+  createdAt    DateTime  @default(now())
+}
+
+model AuditLog {
+  id       String   @id @default(cuid())
+  at       DateTime @default(now())
+  actor    String?
+  action   String
+  entity   String
+  entityId String?
+  summary  String?
+
+  @@index([at])
+}
+
+model ReminderLog {
+  id       String   @id @default(cuid())
+  sentAt   DateTime @default(now())
+  channel  String // TEAMS | EMAIL | MANUAL
+  subject  String?
+  status   String   @default("SENT")
+  payload  String?
+
+  @@index([sentAt])
+}

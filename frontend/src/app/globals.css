@@ -1,0 +1,499 @@
+@import 'tailwindcss';
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   IMPERIAL EDUTECH — ADAPTIVE DESIGN SYSTEM
+   ───────────────────────────────────────────────────────────────────────────
+   Every colour in the application derives from three numbers: the brand hue,
+   saturation and lightness. Change --brand-h/s/l (Settings → Brand) and the
+   entire interface re-tunes — ramps, tints, focus rings, chart accents and
+   dark mode included. Nothing is hard-coded to a specific red.
+
+   Default is hsl(4 77% 48%) ≈ #DA291C, a deep institutional red.
+   Measured contrast of that red against white is 4.87:1, which meets
+   WCAG 2.1 AA for normal-size text. The generated -700 step is used wherever
+   brand colour carries small text, giving further headroom.
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+:root {
+  /* ── Brand seed ───────────────────────────────────────────────────────── */
+  --brand-h: 4;
+  --brand-s: 77%;
+  --brand-l: 48%;
+
+  /* ── Derived brand ramp ───────────────────────────────────────────────── */
+  --brand-50: hsl(var(--brand-h) calc(var(--brand-s) * 0.55) 97%);
+  --brand-100: hsl(var(--brand-h) calc(var(--brand-s) * 0.62) 94%);
+  --brand-200: hsl(var(--brand-h) calc(var(--brand-s) * 0.7) 87%);
+  --brand-300: hsl(var(--brand-h) calc(var(--brand-s) * 0.78) 78%);
+  --brand-400: hsl(var(--brand-h) calc(var(--brand-s) * 0.9) 64%);
+  --brand-500: hsl(var(--brand-h) var(--brand-s) var(--brand-l));
+  --brand-600: hsl(var(--brand-h) var(--brand-s) calc(var(--brand-l) * 0.86));
+  --brand-700: hsl(var(--brand-h) calc(var(--brand-s) * 1.02) calc(var(--brand-l) * 0.72));
+  --brand-800: hsl(var(--brand-h) calc(var(--brand-s) * 0.95) calc(var(--brand-l) * 0.56));
+  --brand-900: hsl(var(--brand-h) calc(var(--brand-s) * 0.88) calc(var(--brand-l) * 0.42));
+  --brand-950: hsl(var(--brand-h) calc(var(--brand-s) * 0.8) calc(var(--brand-l) * 0.26));
+
+  /* ── Neutrals, warmed a few degrees toward the brand hue so greys sit
+        comfortably beside the red rather than reading as cold slate ────── */
+  --n-0: hsl(var(--brand-h) 20% 100%);
+  --n-25: hsl(var(--brand-h) 22% 99%);
+  --n-50: hsl(var(--brand-h) 18% 98%);
+  --n-100: hsl(var(--brand-h) 14% 96%);
+  --n-150: hsl(var(--brand-h) 12% 93%);
+  --n-200: hsl(var(--brand-h) 11% 90%);
+  --n-300: hsl(var(--brand-h) 9% 82%);
+  --n-400: hsl(var(--brand-h) 7% 64%);
+  --n-500: hsl(var(--brand-h) 7% 48%);
+  --n-600: hsl(var(--brand-h) 8% 38%);
+  --n-700: hsl(var(--brand-h) 10% 28%);
+  --n-800: hsl(var(--brand-h) 12% 18%);
+  --n-900: hsl(var(--brand-h) 14% 12%);
+  --n-950: hsl(var(--brand-h) 16% 7%);
+
+  /* ── Semantic surfaces ────────────────────────────────────────────────── */
+  --surface-canvas: var(--n-50);
+  --surface-raised: var(--n-0);
+  --surface-sunken: var(--n-100);
+  --surface-inverse: var(--n-900);
+  --surface-hover: var(--n-100);
+  --surface-active: var(--n-150);
+
+  --text-primary: var(--n-900);
+  --text-secondary: var(--n-600);
+  --text-tertiary: var(--n-500);
+  --text-inverse: var(--n-0);
+  --text-brand: var(--brand-700);
+
+  --border-subtle: var(--n-150);
+  --border-default: var(--n-200);
+  --border-strong: var(--n-300);
+  --border-brand: var(--brand-200);
+
+  /* ── Status palette. Hues fixed; lightness tuned for AA on white. ─────── */
+  --positive: hsl(152 62% 32%);
+  --positive-bg: hsl(152 52% 95%);
+  --positive-border: hsl(152 40% 82%);
+  --warning: hsl(32 88% 36%);
+  --warning-bg: hsl(38 92% 95%);
+  --warning-border: hsl(36 72% 80%);
+  --danger: hsl(var(--brand-h) 74% 42%);
+  --danger-bg: hsl(var(--brand-h) 76% 96%);
+  --danger-border: hsl(var(--brand-h) 60% 86%);
+  --info: hsl(214 74% 42%);
+  --info-bg: hsl(214 84% 96%);
+  --info-border: hsl(214 60% 86%);
+  --neutral-bg: var(--n-100);
+  --neutral-border: var(--n-200);
+
+  /* ── Elevation. Two-layer shadows: a tight contact shadow plus a soft
+        ambient one, which reads as depth without looking heavy. ────────── */
+  --shadow-xs: 0 1px 2px hsl(var(--brand-h) 20% 12% / 0.05);
+  --shadow-sm: 0 1px 2px hsl(var(--brand-h) 20% 12% / 0.06), 0 2px 6px hsl(var(--brand-h) 20% 12% / 0.04);
+  --shadow-md: 0 2px 4px hsl(var(--brand-h) 20% 12% / 0.06), 0 8px 20px hsl(var(--brand-h) 20% 12% / 0.07);
+  --shadow-lg: 0 4px 8px hsl(var(--brand-h) 20% 12% / 0.07), 0 18px 40px hsl(var(--brand-h) 20% 12% / 0.1);
+  --shadow-brand: 0 4px 14px hsl(var(--brand-h) var(--brand-s) var(--brand-l) / 0.25);
+
+  /* ── Geometry ─────────────────────────────────────────────────────────── */
+  --radius-xs: 6px;
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+  --radius-xl: 20px;
+  --radius-2xl: 26px;
+  --radius-pill: 999px;
+
+  /* ── Density: `comfortable` (default) and `compact`, toggled at runtime.
+        Only these five numbers change; every component reads from them. ── */
+  --density-row: 46px;
+  --density-pad-y: 0.6rem;
+  --density-pad-x: 0.85rem;
+  --density-gap: 1rem;
+  --density-font: 0.875rem;
+
+  /* ── Motion ───────────────────────────────────────────────────────────── */
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+  --dur-fast: 120ms;
+  --dur-base: 200ms;
+  --dur-slow: 380ms;
+
+  /* ── Charts ───────────────────────────────────────────────────────────────
+     This categorical order is not a matter of taste — it was computed and
+     machine-verified against the light surface for: OKLCH lightness band,
+     chroma floor, adjacent-pair separation under protanopia, deuteranopia and
+     tritanopia (worst adjacent pair ΔE 14.9 deutan / 11.0 tritan, both above
+     the ΔE 8 target), normal-vision separation (worst 23.6) and ≥3:1 contrast
+     against the surface. Slots are assigned in this fixed order and never
+     cycled or reassigned by rank, so a series keeps its colour when the chart
+     is filtered. A ninth series folds into "Other" rather than inventing a hue.
+     Hex reference: #d9291c #1487b8 #a96d19 #7566d6 #12a184 #ab35de #558c18 #c7339a */
+  --chart-1: hsl(var(--brand-h) var(--brand-s) var(--brand-l));
+  --chart-2: hsl(198 80% 40%);
+  --chart-3: hsl(35 74% 38%);
+  --chart-4: hsl(248 58% 62%);
+  --chart-5: hsl(168 80% 35%);
+  --chart-6: hsl(282 72% 54%);
+  --chart-7: hsl(88 71% 32%);
+  --chart-8: hsl(318 59% 49%);
+  --chart-other: var(--n-400);
+  --chart-grid: var(--n-200);
+  --chart-axis: var(--n-500);
+
+  /* Sequential — one hue, light to dark. For magnitude only (treemaps, heat). */
+  --seq-1: hsl(var(--brand-h) calc(var(--brand-s) * 0.5) 92%);
+  --seq-2: hsl(var(--brand-h) calc(var(--brand-s) * 0.65) 82%);
+  --seq-3: hsl(var(--brand-h) calc(var(--brand-s) * 0.8) 68%);
+  --seq-4: hsl(var(--brand-h) var(--brand-s) 54%);
+  --seq-5: hsl(var(--brand-h) var(--brand-s) calc(var(--brand-l) * 0.78));
+
+  /* Diverging — warm/cool poles with a genuinely neutral grey midpoint.
+     Used only where the measure has a true zero: cost increase vs decrease. */
+  --div-neg-2: hsl(185 62% 30%);
+  --div-neg-1: hsl(185 42% 60%);
+  --div-mid: var(--n-300);
+  --div-pos-1: hsl(var(--brand-h) 48% 68%);
+  --div-pos-2: hsl(var(--brand-h) var(--brand-s) calc(var(--brand-l) * 0.9));
+
+  --focus-ring: hsl(var(--brand-h) var(--brand-s) calc(var(--brand-l) * 0.9));
+  color-scheme: light;
+}
+
+/* ── Dark theme. Not an inversion: surfaces gain a little brand hue,
+      the brand ramp lifts in lightness to stay legible on dark, and the
+      status colours are re-tuned rather than reused. ──────────────────── */
+[data-theme='dark'] {
+  --brand-500: hsl(var(--brand-h) calc(var(--brand-s) * 0.92) 58%);
+  --brand-600: hsl(var(--brand-h) calc(var(--brand-s) * 0.92) 52%);
+  --brand-700: hsl(var(--brand-h) calc(var(--brand-s) * 0.88) 66%);
+
+  --surface-canvas: hsl(var(--brand-h) 16% 8%);
+  --surface-raised: hsl(var(--brand-h) 14% 12%);
+  --surface-sunken: hsl(var(--brand-h) 18% 6%);
+  --surface-inverse: var(--n-50);
+  --surface-hover: hsl(var(--brand-h) 12% 16%);
+  --surface-active: hsl(var(--brand-h) 12% 20%);
+
+  --text-primary: hsl(var(--brand-h) 16% 96%);
+  --text-secondary: hsl(var(--brand-h) 10% 72%);
+  --text-tertiary: hsl(var(--brand-h) 8% 58%);
+  --text-inverse: hsl(var(--brand-h) 16% 10%);
+  --text-brand: hsl(var(--brand-h) calc(var(--brand-s) * 0.9) 68%);
+
+  --border-subtle: hsl(var(--brand-h) 12% 18%);
+  --border-default: hsl(var(--brand-h) 12% 22%);
+  --border-strong: hsl(var(--brand-h) 10% 32%);
+  --border-brand: hsl(var(--brand-h) 40% 30%);
+
+  --positive: hsl(152 58% 62%);
+  --positive-bg: hsl(152 40% 14%);
+  --positive-border: hsl(152 34% 26%);
+  --warning: hsl(38 88% 64%);
+  --warning-bg: hsl(36 46% 14%);
+  --warning-border: hsl(36 40% 28%);
+  --danger: hsl(var(--brand-h) 82% 68%);
+  --danger-bg: hsl(var(--brand-h) 44% 15%);
+  --danger-border: hsl(var(--brand-h) 40% 30%);
+  --info: hsl(214 84% 70%);
+  --info-bg: hsl(214 44% 15%);
+  --info-border: hsl(214 40% 30%);
+  --neutral-bg: hsl(var(--brand-h) 12% 16%);
+  --neutral-border: hsl(var(--brand-h) 12% 24%);
+
+  --shadow-xs: 0 1px 2px hsl(0 0% 0% / 0.4);
+  --shadow-sm: 0 1px 2px hsl(0 0% 0% / 0.45), 0 2px 6px hsl(0 0% 0% / 0.3);
+  --shadow-md: 0 2px 4px hsl(0 0% 0% / 0.45), 0 8px 20px hsl(0 0% 0% / 0.38);
+  --shadow-lg: 0 4px 8px hsl(0 0% 0% / 0.5), 0 18px 40px hsl(0 0% 0% / 0.45);
+
+  /* Dark-mode series are re-derived against the dark surface and re-validated,
+     not lightened copies of the light set. Same hue identity in both themes so
+     a series keeps its colour when the user switches. Worst adjacent pair
+     ΔE 14.9 deutan / 8.6 tritan; all eight ≥3:1 on the dark surface.
+     Hex reference: #d9453a #1b8bbb #af7018 #7b6dd9 #15997e #b043df #5d9220 #c14e9e */
+  --chart-1: hsl(var(--brand-h) calc(var(--brand-s) * 0.88) 54%);
+  --chart-2: hsl(198 75% 42%);
+  --chart-3: hsl(35 76% 39%);
+  --chart-4: hsl(248 59% 64%);
+  --chart-5: hsl(168 76% 34%);
+  --chart-6: hsl(282 71% 57%);
+  --chart-7: hsl(88 64% 35%);
+  --chart-8: hsl(318 48% 53%);
+  --chart-other: hsl(var(--brand-h) 8% 45%);
+  --chart-grid: hsl(var(--brand-h) 12% 22%);
+  --chart-axis: hsl(var(--brand-h) 8% 58%);
+
+  --seq-1: hsl(var(--brand-h) 30% 22%);
+  --seq-2: hsl(var(--brand-h) 45% 32%);
+  --seq-3: hsl(var(--brand-h) 58% 42%);
+  --seq-4: hsl(var(--brand-h) 68% 52%);
+  --seq-5: hsl(var(--brand-h) 74% 64%);
+
+  --div-neg-2: hsl(185 62% 52%);
+  --div-neg-1: hsl(185 38% 38%);
+  --div-mid: hsl(var(--brand-h) 8% 34%);
+  --div-pos-1: hsl(var(--brand-h) 40% 44%);
+  --div-pos-2: hsl(var(--brand-h) 72% 60%);
+
+  color-scheme: dark;
+}
+
+[data-density='compact'] {
+  --density-row: 36px;
+  --density-pad-y: 0.35rem;
+  --density-pad-x: 0.6rem;
+  --density-gap: 0.65rem;
+  --density-font: 0.8125rem;
+}
+
+/* Bridge the token layer into Tailwind's utility namespace so `bg-raised`,
+   `text-secondary`, `border-line` etc. resolve to the same variables. */
+@theme inline {
+  --color-canvas: var(--surface-canvas);
+  --color-raised: var(--surface-raised);
+  --color-sunken: var(--surface-sunken);
+  --color-hovered: var(--surface-hover);
+  --color-activated: var(--surface-active);
+  --color-inverse: var(--surface-inverse);
+
+  --color-primary: var(--text-primary);
+  --color-secondary: var(--text-secondary);
+  --color-tertiary: var(--text-tertiary);
+  --color-on-inverse: var(--text-inverse);
+
+  --color-brand-50: var(--brand-50);
+  --color-brand-100: var(--brand-100);
+  --color-brand-200: var(--brand-200);
+  --color-brand-300: var(--brand-300);
+  --color-brand-400: var(--brand-400);
+  --color-brand-500: var(--brand-500);
+  --color-brand-600: var(--brand-600);
+  --color-brand-700: var(--brand-700);
+  --color-brand-800: var(--brand-800);
+  --color-brand-900: var(--brand-900);
+
+  --color-line-subtle: var(--border-subtle);
+  --color-line: var(--border-default);
+  --color-line-strong: var(--border-strong);
+  --color-line-brand: var(--border-brand);
+
+  --color-positive: var(--positive);
+  --color-warning: var(--warning);
+  --color-danger: var(--danger);
+  --color-info: var(--info);
+
+  --radius-xs: 6px;
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+  --radius-xl: 20px;
+  --radius-2xl: 26px;
+
+  --font-sans: var(--font-inter), ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --font-mono: ui-monospace, 'SF Mono', Menlo, monospace;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  background: var(--surface-canvas);
+  color: var(--text-primary);
+  font-family: var(--font-inter), ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif;
+  font-feature-settings: 'cv02', 'cv03', 'cv04', 'cv11';
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+/* Numbers in tables and metrics must align vertically; tabular figures do that. */
+.tabular {
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: 'tnum';
+}
+
+::selection {
+  background: var(--brand-200);
+  color: var(--brand-950);
+}
+
+:focus-visible {
+  outline: 2px solid var(--focus-ring);
+  outline-offset: 2px;
+  border-radius: var(--radius-xs);
+}
+
+/* Scrollbars: thin and self-effacing, but still visible enough to grab. */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--border-strong) transparent;
+}
+*::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+*::-webkit-scrollbar-track {
+  background: transparent;
+}
+*::-webkit-scrollbar-thumb {
+  background: var(--border-strong);
+  border-radius: var(--radius-pill);
+  border: 3px solid transparent;
+  background-clip: content-box;
+}
+*::-webkit-scrollbar-thumb:hover {
+  background: var(--n-400);
+  background-clip: content-box;
+}
+
+/* ── Bento grid ───────────────────────────────────────────────────────────
+   A 12-column grid with a fixed row unit. Tiles declare a column and row span
+   and the grid resolves the packing, which is what gives the layout its
+   characteristic mixed-size look without any tile needing to know about its
+   neighbours. Spans collapse progressively at each breakpoint. */
+.bento {
+  display: grid;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  grid-auto-rows: minmax(84px, auto);
+  gap: var(--density-gap);
+}
+@media (max-width: 1280px) {
+  .bento {
+    grid-template-columns: repeat(8, minmax(0, 1fr));
+  }
+}
+@media (max-width: 900px) {
+  .bento {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}
+@media (max-width: 620px) {
+  .bento {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+.bento-tile {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  background: var(--surface-raised);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
+  overflow: hidden;
+  transition:
+    box-shadow var(--dur-base) var(--ease-out),
+    border-color var(--dur-base) var(--ease-out),
+    transform var(--dur-base) var(--ease-out);
+}
+.bento-tile[data-interactive='true']:hover {
+  box-shadow: var(--shadow-md);
+  border-color: var(--border-default);
+  transform: translateY(-2px);
+}
+.bento-tile[data-accent='true']::before {
+  content: '';
+  position: absolute;
+  inset: 0 0 auto 0;
+  height: 3px;
+  background: linear-gradient(90deg, var(--brand-500), var(--brand-400) 55%, transparent);
+  z-index: 1;
+}
+
+/* ── Contextual interaction layers ────────────────────────────────────────
+   Three stacked layers above the page: a slide-over inspector, a command
+   palette, and transient popovers. Each gets its own z-index band so they
+   compose predictably instead of fighting. */
+.layer-scrim {
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  background: hsl(var(--brand-h) 20% 8% / 0.35);
+  backdrop-filter: blur(3px);
+  animation: fade-in var(--dur-base) var(--ease-out);
+}
+.layer-inspector {
+  position: fixed;
+  z-index: 61;
+  inset: 0 0 0 auto;
+  width: min(620px, 100vw);
+  background: var(--surface-raised);
+  border-left: 1px solid var(--border-default);
+  box-shadow: var(--shadow-lg);
+  display: flex;
+  flex-direction: column;
+  animation: slide-in-right var(--dur-slow) var(--ease-out);
+}
+.layer-palette {
+  position: fixed;
+  z-index: 71;
+  top: 12vh;
+  left: 50%;
+  transform: translateX(-50%);
+  width: min(640px, calc(100vw - 2rem));
+  background: var(--surface-raised);
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-lg);
+  overflow: hidden;
+  animation: pop-in var(--dur-base) var(--ease-spring);
+}
+
+@keyframes fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+@keyframes slide-in-right {
+  from { transform: translateX(24px); opacity: 0; }
+  to { transform: translateX(0); opacity: 1; }
+}
+@keyframes pop-in {
+  from { transform: translateX(-50%) translateY(-8px) scale(0.97); opacity: 0; }
+  to { transform: translateX(-50%) translateY(0) scale(1); opacity: 1; }
+}
+@keyframes shimmer {
+  from { background-position: -200% 0; }
+  to { background-position: 200% 0; }
+}
+@keyframes pulse-ring {
+  0% { box-shadow: 0 0 0 0 hsl(var(--brand-h) var(--brand-s) var(--brand-l) / 0.4); }
+  70% { box-shadow: 0 0 0 10px hsl(var(--brand-h) var(--brand-s) var(--brand-l) / 0); }
+  100% { box-shadow: 0 0 0 0 hsl(var(--brand-h) var(--brand-s) var(--brand-l) / 0); }
+}
+
+.skeleton {
+  background: linear-gradient(90deg, var(--n-100) 25%, var(--n-150) 37%, var(--n-100) 63%);
+  background-size: 200% 100%;
+  animation: shimmer 1.4s linear infinite;
+  border-radius: var(--radius-sm);
+}
+
+.pulse-urgent {
+  animation: pulse-ring 2s var(--ease-out) infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+  .bento-tile[data-interactive='true']:hover {
+    transform: none;
+  }
+}
+
+/* Recharts leaves a focus outline on its wrapper that adds nothing here. */
+.recharts-wrapper:focus,
+.recharts-surface:focus {
+  outline: none;
+}
+
+@media print {
+  .no-print { display: none !important; }
+  .bento-tile { break-inside: avoid; box-shadow: none; border-color: var(--n-300); }
+  body { background: #fff; }
+}

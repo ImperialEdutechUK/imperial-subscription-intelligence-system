@@ -1,0 +1,29 @@
+# Dependencies
+node_modules/
+.pnp
+.pnp.*
+
+# Builds
+.next/
+out/
+build/
+*.tsbuildinfo
+next-env.d.ts
+
+# Environment — never commit a secret
+.env
+.env.*
+!.env.example
+
+# Platforms
+.vercel
+
+# Editors and OS
+.DS_Store
+*.pem
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
