@@ -86,6 +86,11 @@ export function DepartmentTile({
 }: {
   data: { id: string; name: string; code: string; color: string; monthlyGbp: number; subscriptionCount: number; sharedCount: number; perHeadMonthly: number | null }[];
 }) {
+  // A department with no subscriptions and no cost is still true, but it is not
+  // news three times over. Listed once in the caption instead of taking a row.
+  const funded = data.filter((d) => d.subscriptionCount > 0 || d.monthlyGbp > 0);
+  const dormant = data.filter((d) => d.subscriptionCount === 0 && d.monthlyGbp === 0);
+
   return (
     <BentoTile col={4} row={4}>
       <TileHeader
@@ -104,7 +109,13 @@ export function DepartmentTile({
         ) : (
           <ChartFrame
             tableOnly
-            caption="Shared subscriptions are split by the method set on each one, so these figures reconcile to the portfolio total exactly."
+            // Departments that carry nothing are a fact worth stating once, not
+            // three identical rows of "£0 · 0" competing with the ones that do.
+            caption={
+              dormant.length > 0
+                ? `Shared subscriptions are split by the method set on each one, so these reconcile to the portfolio total exactly. ${dormant.length} department${dormant.length === 1 ? '' : 's'} carry no subscriptions: ${dormant.map((d) => d.name).join(', ')}.`
+                : 'Shared subscriptions are split by the method set on each one, so these figures reconcile to the portfolio total exactly.'
+            }
             // Decimals are fixed per column rather than left to the default,
             // which picks them per value and printed "£3,083" directly above
             // "£906.45" in the same column. Whole pounds for the spend columns;
@@ -112,8 +123,14 @@ export function DepartmentTile({
             table={
               <MiniTable
                 head={['Department', 'Monthly', 'Annual', 'Subs', 'Per head']}
-                rows={data.map((d) => [
-                  d.name,
+                rows={funded.map((d) => [
+                  // The identity colour was previously carried by the bar chart
+                  // this table replaced. Without it the department is named in
+                  // one place and coloured in another, and nothing connects them.
+                  <span key={d.id} className="flex min-w-0 items-center gap-1.5">
+                    <span className="size-2 shrink-0 rounded-full" style={{ background: d.color }} aria-hidden />
+                    <span className="truncate">{d.name}</span>
+                  </span>,
                   formatMoney(d.monthlyGbp, 'GBP', { decimals: 0 }),
                   formatMoney(d.monthlyGbp * 12, 'GBP', { decimals: 0 }),
                   d.subscriptionCount,

@@ -394,6 +394,22 @@ body {
   }
 }
 
+/* Touch targets.
+   Keyed on the pointer rather than the viewport on purpose: a laptop with a
+   touchscreen needs these too, and a phone held in landscape is still a phone.
+   Measured on the dashboard at 390px, twenty-four controls sat under 44px —
+   the header buttons at 32-36px and the primary actions at 32px tall.
+   min-width is harmless on controls that already carry a label, and only bites
+   on the icon-only ones that were square and small. */
+@media (pointer: coarse) {
+  button,
+  select,
+  [role='tab'] {
+    min-height: 44px;
+    min-width: 44px;
+  }
+}
+
 /* Narrowing the grid above is only half the job. BentoTile writes its span as
    an inline `grid-column`, and an inline style cannot be overridden by a
    stylesheet without `!important`. Left alone the spans survive every
