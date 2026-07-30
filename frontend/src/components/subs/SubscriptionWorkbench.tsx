@@ -380,13 +380,19 @@ export function SubscriptionWorkbench({
                         </div>
                       </td>
                       <td className="hidden px-3 py-1.5 lg:table-cell">
-                        <span className="text-meta" style={{ color: 'var(--text-secondary)' }}>
+                        <span className="block truncate text-meta whitespace-nowrap" title={r.categoryLabel} style={{ color: 'var(--text-secondary)' }}>
                           {r.categoryLabel}
                         </span>
                       </td>
                       <td className="px-3 py-1.5">
-                        <span className="flex flex-wrap gap-1">
-                          {r.allocations.slice(0, 3).map((a) => (
+                        {/* One line, not wrapped. Three chips plus a share
+                            percentage each ran onto a second row and made the
+                            row 78px against a 51px neighbour, which is what
+                            made the register hard to scan down. Two chips fit;
+                            the rest roll into the +N, which already carried a
+                            tooltip and the detail panel behind it. */}
+                        <span className="flex items-center gap-1 whitespace-nowrap">
+                          {r.allocations.slice(0, 2).map((a) => (
                             <span
                               key={a.departmentId}
                               className="rounded-full px-1.5 py-0.5 text-micro font-medium"
@@ -397,15 +403,19 @@ export function SubscriptionWorkbench({
                               {r.shared ? ` ${(a.share * 100).toFixed(0)}%` : ''}
                             </span>
                           ))}
-                          {r.allocations.length > 3 ? (
-                            <span className="text-micro" style={{ color: 'var(--text-tertiary)' }}>
-                              +{r.allocations.length - 3}
+                          {r.allocations.length > 2 ? (
+                            <span
+                              className="text-micro"
+                              style={{ color: 'var(--text-tertiary)' }}
+                              title={r.allocations.slice(2).map((a) => `${a.departmentName} ${(a.share * 100).toFixed(0)}%`).join(', ')}
+                            >
+                              +{r.allocations.length - 2}
                             </span>
                           ) : null}
                         </span>
                       </td>
                       <td className="hidden px-3 py-1.5 md:table-cell">
-                        <span className="text-meta" style={{ color: 'var(--text-secondary)' }}>
+                        <span className="block truncate text-meta whitespace-nowrap" style={{ color: 'var(--text-secondary)' }}>
                           {r.billingLabel}
                           {r.perSeat ? ` · ${r.seats} seats` : ''}
                         </span>
@@ -444,7 +454,7 @@ export function SubscriptionWorkbench({
                             —
                           </span>
                         ) : (
-                          <span className="text-meta" style={{ color: urgent ? 'var(--danger)' : 'var(--text-secondary)', fontWeight: urgent ? 600 : 400 }}>
+                          <span className="text-meta whitespace-nowrap" style={{ color: urgent ? 'var(--danger)' : 'var(--text-secondary)', fontWeight: urgent ? 600 : 400 }}>
                             {relativeDays(r.daysToRenewal)}
                           </span>
                         )}

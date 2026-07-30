@@ -1,0 +1,17 @@
+{
+  "detector": {
+    "ignoreRules": [],
+    "ignoreFiles": [],
+    "ignoreValues": [
+      {
+        "rule": "side-tab",
+        "value": "*",
+        "files": [
+          "frontend/src/app/globals.css"
+        ],
+        "createdAt": "2026-07-30T11:36:06.698Z",
+        "reason": "Top edge, not a side border: inset 0 0 auto 0, 3px, fades to transparent, on 2 of ~12 tiles. The banned pattern is a border-left/right callout."
+      }
+    ]
+  }
+}
