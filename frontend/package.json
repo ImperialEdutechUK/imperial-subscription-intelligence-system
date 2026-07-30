@@ -3,6 +3,9 @@
   "version": "1.0.0",
   "private": true,
   "description": "Web interface for the Imperial Edutech subscription register. Renders the dashboards and forms; holds no database. Deployed to Vercel.",
+  "engines": {
+    "node": ">=20.9.0"
+  },
   "scripts": {
     "dev": "next dev -p 3000",
     "build": "next build",

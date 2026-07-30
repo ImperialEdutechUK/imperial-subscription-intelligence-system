@@ -3,6 +3,9 @@
   "version": "1.0.0",
   "private": true,
   "description": "API service for the Imperial Edutech subscription register. Owns the database, the domain logic and every write path. Deployed to Railway.",
+  "engines": {
+    "node": ">=20.19.0"
+  },
   "scripts": {
     "dev": "next dev -p 3001",
     "build": "prisma generate && next build",
