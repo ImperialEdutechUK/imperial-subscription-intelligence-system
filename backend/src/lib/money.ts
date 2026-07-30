@@ -202,7 +202,7 @@ export function normaliseCost(input: CostInput, fx: FxTable = {}): NormalisedCos
   }
 
   if (currency !== 'GBP' && !fx[currency]) {
-    caveat = [caveat, `No exchange rate set for ${currency}; treated as 1:1 with GBP. Set a rate in Settings.`]
+    caveat = [caveat, `No exchange rate set for ${currency} yet; treated as 1:1 with GBP until the next daily rate refresh.`]
       .filter(Boolean)
       .join(' ');
   }

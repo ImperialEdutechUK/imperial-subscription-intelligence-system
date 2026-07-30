@@ -113,15 +113,15 @@
   --neutral-border: var(--n-200);
 
   /* ── Elevation.
-        Separation is carried by a hairline border; shadow is reserved for
-        things that genuinely float above the page. Stacked ambient shadows on
-        every resting card read as a dashboard template rather than a tool, and
-        the coloured brand glow is not a depth cue at all. Kept: a hairline for
-        controls, a real shadow for menus, a deeper one for dialogs. ─────── */
-  --shadow-xs: 0 1px 1px hsl(var(--brand-h) 12% 12% / 0.04);
-  --shadow-sm: 0 1px 2px hsl(var(--brand-h) 12% 12% / 0.06);
-  --shadow-md: 0 4px 12px hsl(var(--brand-h) 12% 12% / 0.08), 0 1px 2px hsl(var(--brand-h) 12% 12% / 0.06);
-  --shadow-lg: 0 12px 32px hsl(var(--brand-h) 12% 12% / 0.12), 0 2px 6px hsl(var(--brand-h) 12% 12% / 0.06);
+        Two layers per step: a tight contact shadow that sits the card on the
+        page, and a softer ambient one that gives it height. Both carry an
+        offset and a blur, so the depth reads as a light source above rather
+        than a halo drawn around the edge. Cards lift on hover; menus and
+        dialogs sit higher again. ────────────────────────────────────────── */
+  --shadow-xs: 0 1px 2px hsl(var(--brand-h) 14% 14% / 0.06);
+  --shadow-sm: 0 1px 2px hsl(var(--brand-h) 14% 14% / 0.07), 0 2px 5px hsl(var(--brand-h) 14% 14% / 0.06);
+  --shadow-md: 0 2px 4px hsl(var(--brand-h) 14% 14% / 0.07), 0 8px 18px hsl(var(--brand-h) 14% 14% / 0.10);
+  --shadow-lg: 0 4px 8px hsl(var(--brand-h) 14% 14% / 0.08), 0 18px 40px hsl(var(--brand-h) 14% 14% / 0.14);
   --shadow-brand: 0 1px 2px hsl(var(--brand-h) 12% 12% / 0.10);
 
   /* ── Geometry ─────────────────────────────────────────────────────────── */
@@ -433,15 +433,19 @@ body {
   background: var(--surface-raised);
   border: 1px solid var(--border-subtle);
   border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
   overflow: hidden;
   transition:
     box-shadow var(--dur-base) var(--ease-out),
     border-color var(--dur-base) var(--ease-out),
     transform var(--dur-base) var(--ease-out);
 }
+.bento-tile:hover {
+  box-shadow: var(--shadow-md);
+}
 .bento-tile[data-interactive='true']:hover {
-  border-color: var(--border-strong);
-  background: var(--surface-hover);
+  border-color: var(--border-default);
+  transform: translateY(-2px);
 }
 /* An accented tile is now marked by a slightly stronger hairline, not by a
    coloured bar laid across its top edge. The emphasis survives; the decoration

@@ -17,6 +17,7 @@ import { useRouter } from 'next/navigation';
 import Papa from 'papaparse';
 import {
   AlertTriangle,
+  Check,
   CalendarClock,
   CheckCircle2,
   ClipboardPaste,
@@ -67,6 +68,65 @@ const PLACEHOLDER = [
   'Adobe Creative Cloud\t£1,234.00\t12/03/2026\tCD\tYearly',
   'ChatGPT Team\t£25.00/mo\t01/09/2026\tAI\tMonthly',
 ].join('\n');
+
+
+/**
+ * The three moves, always visible on the import tab.
+ *
+ * The panels below already do the work, but arriving at an empty box gave no
+ * sense of what happens after you fill it — whether it imports straight away,
+ * how many chances there are to check, whether anything is written yet. Naming
+ * the sequence up front answers all three before the first paste.
+ */
+function Steps({ current }: { current: 1 | 2 | 3 }) {
+  const steps = [
+    { n: 1 as const, label: 'Add your data', hint: 'Paste, or drop a file' },
+    { n: 2 as const, label: 'Check the columns', hint: 'Matched for you' },
+    { n: 3 as const, label: 'Import', hint: 'Nothing is saved before this' },
+  ];
+  return (
+    <ol className="flex flex-wrap items-stretch gap-2" aria-label="Import steps">
+      {steps.map((s) => {
+        const state = s.n === current ? 'current' : s.n < current ? 'done' : 'todo';
+        return (
+          <li
+            key={s.n}
+            aria-current={state === 'current' ? 'step' : undefined}
+            className="flex min-w-[10rem] flex-1 items-center gap-2.5 rounded-[var(--radius-md)] border px-3 py-2.5"
+            style={{
+              background: state === 'current' ? 'var(--brand-50)' : 'var(--surface-raised)',
+              borderColor: state === 'current' ? 'var(--border-brand)' : 'var(--border-subtle)',
+              boxShadow: state === 'current' ? 'var(--shadow-sm)' : undefined,
+            }}
+          >
+            <span
+              className="grid size-6 shrink-0 place-items-center rounded-full text-meta font-semibold"
+              style={
+                state === 'todo'
+                  ? { background: 'var(--surface-sunken)', color: 'var(--text-tertiary)' }
+                  : { background: 'var(--brand-500)', color: '#fff' }
+              }
+              aria-hidden
+            >
+              {state === 'done' ? <Check size={13} strokeWidth={3} /> : s.n}
+            </span>
+            <span className="min-w-0">
+              <span
+                className="block truncate text-title font-medium"
+                style={{ color: state === 'todo' ? 'var(--text-tertiary)' : 'var(--text-primary)' }}
+              >
+                {s.label}
+              </span>
+              <span className="block truncate text-meta" style={{ color: 'var(--text-tertiary)' }}>
+                {s.hint}
+              </span>
+            </span>
+          </li>
+        );
+      })}
+    </ol>
+  );
+}
 
 // ─────────────────────────────────────────────────────────────── Layout ──
 
@@ -634,6 +694,8 @@ export function ImportWorkbench({
   return (
     <div className="space-y-4">
       <Segmented options={tabs} value={tab} onChange={setTab} />
+
+      {tab === 'import' ? <Steps current={outcome?.ok ? 3 : ingested ? 2 : 1} /> : null}
 
       {/* One way in, not a choice of three.
           Pasting, dropping a file and picking a file all end at the same
