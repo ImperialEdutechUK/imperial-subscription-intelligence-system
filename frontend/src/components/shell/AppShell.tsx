@@ -13,7 +13,6 @@ import {
   Rows3,
   Rows4,
   Search,
-  Settings as SettingsIcon,
   Sun,
   Upload,
   CalendarClock,
@@ -26,14 +25,13 @@ import { CommandPalette } from './CommandPalette';
 import { signOut } from '@/server/auth-actions';
 
 const NAV = [
-  { href: '/', label: 'Dashboard', icon: LayoutDashboard, hint: 'Bento overview of spend, renewals and risk' },
+  { href: '/', label: 'Overview', icon: LayoutDashboard, hint: 'Spend, renewals and risk at a glance' },
   { href: '/subscriptions', label: 'Subscriptions', icon: ListTree, hint: 'The full register — add and edit here' },
   { href: '/renewals', label: 'Renewals & alerts', icon: CalendarClock, hint: 'What is due, and which card needs topping up' },
   { href: '/cards', label: 'Cards & top-ups', icon: CreditCard, hint: 'Card balances and shortfall detection' },
   { href: '/departments', label: 'Departments', icon: Building2, hint: 'Cost per department, including shared splits' },
   { href: '/analytics', label: 'Analytics', icon: BarChart3, hint: 'Trends, concentration and statistical observations' },
   { href: '/import', label: 'Import & export', icon: Upload, hint: 'Paste from Excel, upload CSV, export for Finance' },
-  { href: '/settings', label: 'Settings', icon: SettingsIcon, hint: 'Brand, currencies, alert thresholds, users' },
 ] as const;
 
 type Theme = 'light' | 'dark';
@@ -130,7 +128,7 @@ export function AppShell({
         className="no-print sticky top-0 z-40"
         style={{ background: 'var(--surface-raised)', borderBottom: '1px solid var(--border-default)' }}
       >
-        <div className="mx-auto flex h-14 w-full max-w-[1600px] items-center gap-1 px-4 md:px-6">
+        <div className="mx-auto flex h-16 w-full max-w-[1600px] items-center gap-1.5 px-4 md:px-6">
           <button
             onClick={() => setNavOpen((v) => !v)}
             aria-label={navOpen ? 'Close menu' : 'Open menu'}
@@ -144,13 +142,13 @@ export function AppShell({
 
           <Link href="/" className="mr-3 flex shrink-0 items-center gap-2" aria-label={`${orgName} home`}>
             <span
-              className="grid size-7 shrink-0 place-items-center rounded-[var(--radius-sm)] text-meta font-bold text-white"
-              style={{ background: 'var(--brand-600)' }}
+              className="grid size-8 shrink-0 place-items-center rounded-[var(--radius-sm)] text-meta font-bold text-white"
+              style={{ background: 'var(--brand-500)' }}
               aria-hidden
             >
               IE
             </span>
-            <span className="hidden truncate text-sm font-semibold sm:inline" style={{ color: 'var(--text-primary)' }}>
+            <span className="hidden truncate text-base font-semibold sm:inline" style={{ color: 'var(--text-primary)' }}>
               {orgName}
             </span>
           </Link>
@@ -166,7 +164,7 @@ export function AppShell({
                   href={item.href}
                   title={item.hint}
                   aria-current={isActive ? 'page' : undefined}
-                  className="rounded-[var(--radius-sm)] px-3 py-2 text-sm font-medium whitespace-nowrap transition-colors hover:bg-[var(--surface-hover)]"
+                  className="rounded-[var(--radius-sm)] px-3 py-2 text-[0.9375rem] font-medium whitespace-nowrap transition-colors hover:bg-[var(--surface-hover)]"
                   style={
                     isActive
                       ? { color: 'var(--brand-700)', background: 'var(--brand-50)' }
@@ -229,7 +227,7 @@ export function AppShell({
         <nav
           id="mobile-nav"
           aria-label="Primary"
-          className="no-print sticky top-14 z-30 md:hidden"
+          className="no-print sticky top-16 z-30 md:hidden"
           style={{ background: 'var(--surface-raised)', borderBottom: '1px solid var(--border-subtle)', boxShadow: 'var(--shadow-md)' }}
         >
           <ul className="space-y-0.5 p-2">

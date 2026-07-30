@@ -214,7 +214,7 @@ export function Stat({
 }) {
   // Figures state the number rather than perform it. 2.6rem read as a landing
   // page; these sit in the register's own voice.
-  const sizeClass = size === 'lg' ? 'text-[1.875rem] leading-[1.1]' : size === 'sm' ? 'text-lg leading-tight' : 'text-[1.375rem] leading-tight';
+  const sizeClass = size === 'lg' ? 'text-[2.25rem] leading-[1.08]' : size === 'sm' ? 'text-xl leading-tight' : 'text-[1.625rem] leading-tight';
   const deltaTone: Tone | undefined =
     delta == null ? undefined : delta > 0.05 ? 'danger' : delta < -0.05 ? 'positive' : 'neutral';
 
@@ -365,11 +365,11 @@ export function SectionHeading({
       style={{ borderBottom: '1px solid var(--border-subtle)' }}
     >
       <div className="min-w-0">
-        <h2 className="text-[0.9375rem] font-semibold tracking-[-0.011em]" style={{ color: 'var(--text-primary)' }}>
+        <h2 className="text-lg font-semibold tracking-[-0.011em]" style={{ color: 'var(--text-primary)' }}>
           {title}
         </h2>
         {description ? (
-          <p className="mt-0.5 max-w-[58ch] text-xs leading-snug" style={{ color: 'var(--text-tertiary)' }}>
+          <p className="mt-1 max-w-[58ch] text-sm leading-snug" style={{ color: 'var(--text-secondary)' }}>
             {description}
           </p>
         ) : null}

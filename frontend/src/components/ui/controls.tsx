@@ -55,7 +55,7 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(function Button
 ) {
   const bg =
     variant === 'primary'
-      ? { background: 'var(--brand-600)' }
+      ? { background: 'var(--brand-500)' }
       : variant === 'danger'
         ? { background: 'var(--danger)' }
         : variant === 'secondary'
@@ -123,7 +123,7 @@ export function LinkButton({
 }) {
   const bg =
     variant === 'primary'
-      ? { background: 'var(--brand-600)' }
+      ? { background: 'var(--brand-500)' }
       : variant === 'danger'
         ? { background: 'var(--danger)' }
         : variant === 'secondary'
@@ -361,7 +361,7 @@ export function Toggle({
         disabled={disabled}
         onClick={() => onChange(!checked)}
         className="relative mt-0.5 h-5 w-9 shrink-0 cursor-pointer rounded-full transition-colors duration-200 disabled:opacity-50"
-        style={{ background: checked ? 'var(--brand-600)' : 'var(--border-strong)' }}
+        style={{ background: checked ? 'var(--brand-500)' : 'var(--border-strong)' }}
       >
         <span
           className="absolute top-0.5 left-0.5 size-4 rounded-full bg-white shadow-sm transition-transform duration-200"

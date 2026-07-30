@@ -15,9 +15,9 @@
    `font-sans` / `font-mono` were quietly resolving to Tailwind's defaults.
    ═══════════════════════════════════════════════════════════════════════════ */
 @theme {
-  --text-title: 0.8125rem;
-  --text-meta: 0.6875rem;
-  --text-micro: 0.625rem;
+  --text-title: 0.9375rem;
+  --text-meta: 0.8125rem;
+  --text-micro: 0.75rem;
 
   --font-sans: var(--font-inter), ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif;
   --font-mono: ui-monospace, 'SF Mono', Menlo, monospace;
@@ -74,7 +74,7 @@
   --n-950: hsl(var(--brand-h) 16% 7%);
 
   /* ── Semantic surfaces ────────────────────────────────────────────────── */
-  --surface-canvas: var(--n-50);
+  --surface-canvas: var(--n-0);
   --surface-raised: var(--n-0);
   --surface-sunken: var(--n-100);
   --surface-inverse: var(--n-900);
@@ -137,11 +137,11 @@
 
   /* ── Density: `comfortable` (default) and `compact`, toggled at runtime.
         Only these five numbers change; every component reads from them. ── */
-  --density-row: 36px;
-  --density-pad-y: 0.4rem;
-  --density-pad-x: 0.75rem;
-  --density-gap: 0.75rem;
-  --density-font: 0.8125rem;
+  --density-row: 42px;
+  --density-pad-y: 0.55rem;
+  --density-pad-x: 0.85rem;
+  --density-gap: 0.9rem;
+  --density-font: 0.9375rem;
 
   /* ── Motion. One curve, everywhere: an exponential decelerate. The palette
         previously popped in on an overshoot spring, which was the only
