@@ -55,9 +55,9 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(function Button
 ) {
   const bg =
     variant === 'primary'
-      ? { background: 'var(--brand-500)' }
+      ? { background: 'var(--brand-500)', color: '#fff' }
       : variant === 'danger'
-        ? { background: 'var(--danger)' }
+        ? { background: 'var(--danger)', color: '#fff' }
         : variant === 'secondary'
           ? { background: 'var(--surface-raised)', borderColor: 'var(--border-default)', color: 'var(--text-primary)' }
           : { color: 'var(--text-secondary)' };
@@ -123,9 +123,9 @@ export function LinkButton({
 }) {
   const bg =
     variant === 'primary'
-      ? { background: 'var(--brand-500)' }
+      ? { background: 'var(--brand-500)', color: '#fff' }
       : variant === 'danger'
-        ? { background: 'var(--danger)' }
+        ? { background: 'var(--danger)', color: '#fff' }
         : variant === 'secondary'
           ? { background: 'var(--surface-raised)', borderColor: 'var(--border-default)', color: 'var(--text-primary)' }
           : { color: 'var(--text-secondary)' };

@@ -42,7 +42,6 @@ export const viewport: Viewport = {
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
   const [brand, jar, user] = await Promise.all([getBrandSettings(), cookies(), getSession()]);
   const themeCookie = jar.get('ie-theme')?.value;
-  const themeChosen = themeCookie === 'dark' || themeCookie === 'light';
   const theme = themeCookie === 'dark' ? 'dark' : 'light';
   const density = jar.get('ie-density')?.value === 'compact' ? 'compact' : 'comfortable';
 
@@ -67,9 +66,6 @@ export default async function RootLayout({ children }: { children: React.ReactNo
       <body className="antialiased">
         <AppShell
           orgName={brand.orgName}
-          initialTheme={theme}
-          initialDensity={density}
-          themeChosen={themeChosen}
           user={user ? { name: user.name, email: user.email, role: user.role } : null}
         >
           {children}

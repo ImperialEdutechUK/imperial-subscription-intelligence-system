@@ -1,6 +1,6 @@
 'use client';
 
-import { useCallback, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import {
@@ -9,18 +9,14 @@ import {
   CreditCard,
   LayoutDashboard,
   ListTree,
-  Moon,
-  Rows3,
-  Rows4,
   Search,
-  Sun,
   Upload,
   CalendarClock,
   LogOut,
   Menu,
   X,
 } from 'lucide-react';
-import { IconButton, Kbd } from '@/components/ui/controls';
+import { Kbd } from '@/components/ui/controls';
 import { CommandPalette } from './CommandPalette';
 import { signOut } from '@/server/auth-actions';
 
@@ -34,64 +30,19 @@ const NAV = [
   { href: '/import', label: 'Import & export', icon: Upload, hint: 'Paste from Excel, upload CSV, export for Finance' },
 ] as const;
 
-type Theme = 'light' | 'dark';
-type Density = 'comfortable' | 'compact';
-
 export function AppShell({
   children,
   orgName,
-  initialTheme,
-  initialDensity,
-  themeChosen,
   user,
 }: {
   children: React.ReactNode;
   orgName: string;
-  initialTheme: Theme;
-  initialDensity: Density;
-  /** False until the user has explicitly picked a theme; light is used until then. */
-  themeChosen: boolean;
   /** Null on the sign-in page, where there is nobody to sign out. */
   user: { name: string; email: string; role: string } | null;
 }) {
   const pathname = usePathname();
-  const [chosenTheme, setChosenTheme] = useState<Theme | null>(themeChosen ? initialTheme : null);
-  const [density, setDensity] = useState<Density>(initialDensity);
   const [paletteOpen, setPaletteOpen] = useState(false);
   const [navOpen, setNavOpen] = useState(false);
-
-  // Light unless the person has explicitly asked for dark. The operating
-  // system's preference is deliberately not consulted: this is a shared
-  // internal tool that is printed and screen-shared, and it should look the
-  // same on every machine rather than changing with whoever's laptop is set to
-  // dark mode. The toggle below still switches, and that choice persists.
-  const theme: Theme = chosenTheme ?? 'light';
-
-  // Preferences live in cookies rather than localStorage so the server can
-  // render the correct theme in the first byte of HTML — no flash, and nothing
-  // for hydration to disagree about. A year is long enough that the preference
-  // effectively sticks, and the cookie carries no personal data.
-  const persist = (key: string, value: string) => {
-    document.cookie = `${key}=${value}; path=/; max-age=31536000; samesite=lax`;
-  };
-
-  // Keeps the document attribute in step with the resolved theme. Mutating the
-  // DOM is what an effect is for; no state is set here.
-  useEffect(() => {
-    document.documentElement.setAttribute('data-theme', theme);
-  }, [theme]);
-
-  const applyTheme = useCallback((t: Theme) => {
-    setChosenTheme(t);
-    document.documentElement.setAttribute('data-theme', t);
-    persist('ie-theme', t);
-  }, []);
-
-  const applyDensity = useCallback((d: Density) => {
-    setDensity(d);
-    document.documentElement.setAttribute('data-density', d);
-    persist('ie-density', d);
-  }, []);
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
@@ -191,19 +142,6 @@ export function AppShell({
               </span>
             </button>
 
-            <IconButton
-              icon={theme === 'dark' ? Sun : Moon}
-              label={theme === 'dark' ? 'Switch to light theme' : 'Switch to dark theme'}
-              size="xs"
-              onClick={() => applyTheme(theme === 'dark' ? 'light' : 'dark')}
-            />
-            <IconButton
-              icon={density === 'compact' ? Rows3 : Rows4}
-              label={density === 'compact' ? 'Comfortable spacing' : 'Compact spacing'}
-              size="xs"
-              onClick={() => applyDensity(density === 'compact' ? 'comfortable' : 'compact')}
-            />
-
             {user ? (
               <form action={signOut} className="flex items-center">
                 <button
@@ -262,11 +200,6 @@ export function AppShell({
 
       <div className="mx-auto flex w-full max-w-[1600px] min-w-0 flex-1 flex-col">
         <main className="min-w-0 flex-1 px-4 py-5 md:px-6 md:py-6">{children}</main>
-
-        <footer className="no-print px-6 pb-6 text-meta" style={{ color: 'var(--text-tertiary)' }}>
-          All monetary figures are normalised to GBP using the exchange rates recorded in Settings. Figures derived from
-          usage or credit top-ups are labelled as estimates wherever they appear.
-        </footer>
       </div>
 
       <CommandPalette open={paletteOpen} onClose={() => setPaletteOpen(false)} nav={NAV.map((n) => ({ href: n.href, label: n.label, hint: n.hint }))} />
