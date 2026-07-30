@@ -128,6 +128,74 @@ function Steps({ current }: { current: 1 | 2 | 3 }) {
   );
 }
 
+
+/**
+ * A worked example, shown only until the first rows arrive.
+ *
+ * The empty box used to carry the example in its placeholder, as raw
+ * tab-separated text — which renders as misaligned gibberish and gives no clue
+ * what the thing wants. Showing an actual little table answers the two
+ * questions people arrive with: what am I supposed to paste, and do my column
+ * names have to match yours.
+ */
+function WorkedExample() {
+  const cols = ['Software', 'Cost', 'Renews', 'Dept'];
+  const rows = [
+    ['Adobe Creative Cloud', '£1,234.00', '12/03/2026', 'CD'],
+    ['ChatGPT Team', '£25.00/mo', '01/09/2026', 'AI'],
+  ];
+  return (
+    <div
+      className="mb-3 rounded-[var(--radius-md)] border p-3"
+      style={{ background: 'var(--surface-sunken)', borderColor: 'var(--border-subtle)' }}
+    >
+      <p className="text-title font-medium" style={{ color: 'var(--text-primary)' }}>
+        Your spreadsheet probably looks something like this
+      </p>
+      <p className="mt-0.5 text-meta" style={{ color: 'var(--text-tertiary)' }}>
+        Select the rows in Excel, copy, and paste into the box below. Include the heading row. Your headings do not have to
+        match ours — they are matched for you on the next step, and you can correct anything that is wrong.
+      </p>
+      <div className="mt-2.5 overflow-x-auto">
+        <table className="text-meta" style={{ background: 'var(--surface-raised)', borderRadius: 'var(--radius-sm)' }}>
+          <thead>
+            <tr>
+              {cols.map((c) => (
+                <th
+                  key={c}
+                  className="px-2.5 py-1.5 text-left font-medium whitespace-nowrap"
+                  style={{ color: 'var(--text-secondary)', borderBottom: '1px solid var(--border-default)' }}
+                >
+                  {c}
+                </th>
+              ))}
+            </tr>
+          </thead>
+          <tbody>
+            {rows.map((r) => (
+              <tr key={r[0]}>
+                {r.map((cell, i) => (
+                  <td
+                    key={i}
+                    className="px-2.5 py-1.5 whitespace-nowrap"
+                    style={{ color: 'var(--text-tertiary)', borderBottom: '1px solid var(--border-subtle)' }}
+                  >
+                    {cell}
+                  </td>
+                ))}
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+      <p className="mt-2.5 text-meta" style={{ color: 'var(--text-tertiary)' }}>
+        Only the software name is required. Anything else you have — cost, renewal date, department, card — is used if it is
+        there and left empty if it is not.
+      </p>
+    </div>
+  );
+}
+
 // ─────────────────────────────────────────────────────────────── Layout ──
 
 function Panel({
@@ -706,13 +774,15 @@ export function ImportWorkbench({
       {tab === 'import' ? (
         <Panel
           title="Bring your subscriptions in"
-          description="Copy rows straight out of Excel and paste them below, or drop a CSV file onto the box. Tab, comma and semicolon separated text are all read. Include your heading row — the columns are matched to fields for you, and you can correct any that are wrong before anything is written."
+          description="Tab, comma and semicolon separated text are all read, so a copy out of Excel or a saved CSV both work."
           action={
             <LinkButton href="/api/export?format=template" download size="xs" icon={FileDown}>
               Download a blank template
             </LinkButton>
           }
         >
+          {!ingested ? <WorkedExample /> : null}
+
           <div
             className="space-y-2"
             onDragOver={(e) => {
