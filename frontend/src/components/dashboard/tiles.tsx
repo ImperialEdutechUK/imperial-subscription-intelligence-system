@@ -19,7 +19,7 @@ import { ChartFrame, MiniTable } from '@/components/charts/ChartFrame';
 import { DivergingBars } from '@/components/charts/primitives';
 import { TrendChart } from '@/components/charts/TrendChart';
 import { Treemap } from '@/components/charts/Treemap';
-import { RenewalTimeline, SharedCostFlow, type FlowLink, type TimelineItem } from '@/components/charts/RenewalTimeline';
+import { SharedCostFlow, type FlowLink, type TimelineItem } from '@/components/charts/RenewalTimeline';
 import { formatMoney } from '@/lib/money';
 import { formatDate, relativeDays } from '@/lib/utils';
 import type { Observation } from '@/server/observations';
@@ -216,11 +216,12 @@ export function RenewalRunwayTile({ items, total90 }: { items: TimelineItem[]; t
           <EmptyState icon={CalendarClock} title="No renewals scheduled" description="Add renewal dates to subscriptions to populate this." compact />
         ) : (
           <ChartFrame
+            tableOnly
             height={160}
-            caption="Weeks are shaded by the amount falling due. A diagonal hatch marks a week containing a charge against a card that will not cover it."
+            caption={`Every payment falling due over the next 13 weeks, earliest first.${items.length > 40 ? ` Showing the first 40 of ${items.length}.` : ''}`}
             table={<MiniTable head={['Subscription', 'Due in', 'Amount']} rows={items.slice(0, 40).map((i) => [i.name, relativeDays(i.days), formatMoney(i.amountGbp)])} />}
           >
-            <RenewalTimeline items={items} height={160} />
+            {null}
           </ChartFrame>
         )}
       </TileBody>
