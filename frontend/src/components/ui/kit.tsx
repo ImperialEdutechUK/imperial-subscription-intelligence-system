@@ -75,7 +75,7 @@ export function TileHeader({
   className?: string;
 }) {
   return (
-    <header className={cn('flex items-start justify-between gap-3 px-4 pt-4 pb-2', className)}>
+    <header className={cn('flex items-start justify-between gap-3 px-3.5 pt-3 pb-1.5', className)}>
       <div className="min-w-0">
         <h3 className="flex items-center gap-2 text-title font-semibold tracking-tight" style={{ color: 'var(--text-primary)' }}>
           {Icon ? <Icon size={14} strokeWidth={2.2} style={{ color: 'var(--text-tertiary)' }} aria-hidden /> : null}
@@ -94,7 +94,7 @@ export function TileHeader({
 
 export function TileBody({ children, className, style }: { children: ReactNode; className?: string; style?: CSSProperties }) {
   return (
-    <div className={cn('min-h-0 flex-1 px-4 pb-4', className)} style={style}>
+    <div className={cn('min-h-0 flex-1 px-3.5 pb-3.5', className)} style={style}>
       {children}
     </div>
   );
@@ -212,17 +212,19 @@ export function Stat({
   size?: 'sm' | 'md' | 'lg';
   footer?: ReactNode;
 }) {
-  const sizeClass = size === 'lg' ? 'text-[2.6rem] leading-[1.05]' : size === 'sm' ? 'text-xl leading-tight' : 'text-[1.75rem] leading-tight';
+  // Figures state the number rather than perform it. 2.6rem read as a landing
+  // page; these sit in the register's own voice.
+  const sizeClass = size === 'lg' ? 'text-[1.875rem] leading-[1.1]' : size === 'sm' ? 'text-lg leading-tight' : 'text-[1.375rem] leading-tight';
   const deltaTone: Tone | undefined =
     delta == null ? undefined : delta > 0.05 ? 'danger' : delta < -0.05 ? 'positive' : 'neutral';
 
   return (
     <div className="flex h-full flex-col justify-between gap-2">
       <div>
-        <p className="text-xs font-medium tracking-wide uppercase" style={{ color: 'var(--text-tertiary)', letterSpacing: '0.04em' }}>
+        <p className="text-meta font-medium" style={{ color: 'var(--text-tertiary)' }}>
           {label}
         </p>
-        <div className="mt-1.5 flex items-baseline gap-1.5">
+        <div className="mt-1 flex items-baseline gap-1.5">
           <span
             className={cn('font-semibold tracking-tight', sizeClass)}
             style={{ color: tone ? TONE_STYLE[tone].color : 'var(--text-primary)', fontVariantNumeric: 'proportional-nums' }}
@@ -353,19 +355,26 @@ export function SectionHeading({
   description?: ReactNode;
   action?: ReactNode;
 }) {
+  // A page header, not a page introduction. The title sits at 15px with the
+  // actions on the same optical line and a hairline closing the band — the
+  // pattern every dense tool uses. The standfirst paragraph it replaced ran at
+  // body size and pushed the actual content a third of the way down the page.
   return (
-    <div className="mb-4 flex flex-wrap items-end justify-between gap-3">
-      <div>
-        <h2 className="text-lg font-semibold tracking-tight" style={{ color: 'var(--text-primary)' }}>
+    <div
+      className="mb-5 flex flex-wrap items-center justify-between gap-x-4 gap-y-2 pb-3"
+      style={{ borderBottom: '1px solid var(--border-subtle)' }}
+    >
+      <div className="min-w-0">
+        <h2 className="text-[0.9375rem] font-semibold tracking-[-0.011em]" style={{ color: 'var(--text-primary)' }}>
           {title}
         </h2>
         {description ? (
-          <p className="mt-0.5 max-w-[58ch] text-sm leading-relaxed" style={{ color: 'var(--text-secondary)' }}>
+          <p className="mt-0.5 max-w-[58ch] text-xs leading-snug" style={{ color: 'var(--text-tertiary)' }}>
             {description}
           </p>
         ) : null}
       </div>
-      {action}
+      {action ? <div className="flex shrink-0 items-center gap-2">{action}</div> : null}
     </div>
   );
 }

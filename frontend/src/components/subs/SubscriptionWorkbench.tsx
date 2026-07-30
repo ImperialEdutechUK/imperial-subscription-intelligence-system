@@ -356,7 +356,7 @@ export function SubscriptionWorkbench({
                       style={{ borderBottom: '1px solid var(--border-subtle)', height: 'var(--density-row)' }}
                       onClick={() => setInspect(r)}
                     >
-                      <td className="px-3 py-1.5">
+                      <td className="px-3 py-1">
                         <div className="flex items-center gap-2">
                           <span className="min-w-0">
                             <span className="flex items-center gap-1.5">
@@ -379,12 +379,12 @@ export function SubscriptionWorkbench({
                           </span>
                         </div>
                       </td>
-                      <td className="hidden px-3 py-1.5 lg:table-cell">
+                      <td className="hidden px-3 py-1 lg:table-cell">
                         <span className="block truncate text-meta whitespace-nowrap" title={r.categoryLabel} style={{ color: 'var(--text-secondary)' }}>
                           {r.categoryLabel}
                         </span>
                       </td>
-                      <td className="px-3 py-1.5">
+                      <td className="px-3 py-1">
                         {/* One line, not wrapped. Three chips plus a share
                             percentage each ran onto a second row and made the
                             row 78px against a 51px neighbour, which is what
@@ -414,13 +414,13 @@ export function SubscriptionWorkbench({
                           ) : null}
                         </span>
                       </td>
-                      <td className="hidden px-3 py-1.5 md:table-cell">
+                      <td className="hidden px-3 py-1 md:table-cell">
                         <span className="block truncate text-meta whitespace-nowrap" style={{ color: 'var(--text-secondary)' }}>
                           {r.billingLabel}
                           {r.perSeat ? ` · ${r.seats} seats` : ''}
                         </span>
                       </td>
-                      <td className="tabular px-3 py-1.5 text-right">
+                      <td className="tabular px-3 py-1 text-right">
                         <span className="flex items-center justify-end gap-1">
                           {r.oneOffGbp > 0 ? (
                             <span title="A one-off purchase has no recurring monthly cost" style={{ color: 'var(--text-tertiary)' }}>
@@ -436,7 +436,7 @@ export function SubscriptionWorkbench({
                           ) : null}
                         </span>
                       </td>
-                      <td className="tabular hidden px-3 py-1.5 text-right sm:table-cell" style={{ color: 'var(--text-secondary)' }}>
+                      <td className="tabular hidden px-3 py-1 text-right sm:table-cell" style={{ color: 'var(--text-secondary)' }}>
                         {r.oneOffGbp > 0 ? (
                           <span title="Paid once, not recurring. Counted in twelve-month cash but not in the run-rate.">
                             {formatMoney(r.oneOffGbp)}{' '}
@@ -448,7 +448,7 @@ export function SubscriptionWorkbench({
                           formatMoney(r.annualGbp)
                         )}
                       </td>
-                      <td className="px-3 py-1.5">
+                      <td className="px-3 py-1">
                         {r.status === 'CANCELLED' || r.daysToRenewal == null ? (
                           <span className="text-meta" style={{ color: 'var(--text-tertiary)' }}>
                             —
@@ -459,7 +459,7 @@ export function SubscriptionWorkbench({
                           </span>
                         )}
                       </td>
-                      <td className="px-3 py-1.5 text-right" onClick={(e) => e.stopPropagation()}>
+                      <td className="px-3 py-1 text-right" onClick={(e) => e.stopPropagation()}>
                         <span className="flex items-center justify-end gap-0.5 opacity-0 transition-opacity group-hover:opacity-100 focus-within:opacity-100">
                           {r.url ? (
                             <LinkButton

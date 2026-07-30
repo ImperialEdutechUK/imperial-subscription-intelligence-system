@@ -133,11 +133,11 @@
 
   /* ── Density: `comfortable` (default) and `compact`, toggled at runtime.
         Only these five numbers change; every component reads from them. ── */
-  --density-row: 46px;
-  --density-pad-y: 0.6rem;
-  --density-pad-x: 0.85rem;
-  --density-gap: 1rem;
-  --density-font: 0.875rem;
+  --density-row: 36px;
+  --density-pad-y: 0.4rem;
+  --density-pad-x: 0.75rem;
+  --density-gap: 0.75rem;
+  --density-font: 0.8125rem;
 
   /* ── Motion. One curve, everywhere: an exponential decelerate. The palette
         previously popped in on an overshoot spring, which was the only
