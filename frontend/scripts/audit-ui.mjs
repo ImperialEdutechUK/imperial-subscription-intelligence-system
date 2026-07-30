@@ -40,9 +40,15 @@ const PAGES = [
   ['Settings', '/settings'],
 ];
 
-/** Controls that must not be clicked automatically: they mutate or destroy data. */
+/**
+ * Controls that must not be clicked automatically.
+ *
+ * Two kinds: those that mutate or destroy data, and `sign out`, which destroys
+ * the audit's own session. Clicking that one makes every subsequent page
+ * redirect to the login screen, which reads as dozens of unrelated failures.
+ */
 const DESTRUCTIVE =
-  /delete|remove|permanently|top up|correct balance|save|import \d|send a test|set$|add top-up|duplicate/i;
+  /delete|remove|permanently|top up|correct balance|save|import \d|send a test|set$|add top-up|duplicate|sign out/i;
 
 const failures = [];
 const warnings = [];

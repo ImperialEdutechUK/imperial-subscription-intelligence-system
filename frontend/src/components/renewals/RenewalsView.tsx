@@ -6,7 +6,6 @@ import { AlertTriangle, CalendarClock, CalendarDays, Check, Copy, Hand, RefreshC
 import { Badge, BentoTile, Chip, EmptyState, Stat, TileBody, TileHeader } from '@/components/ui/kit';
 import { Button, Input, Modal, Segmented, Select, Textarea, LinkButton } from '@/components/ui/controls';
 import { ChartFrame, MiniTable } from '@/components/charts/ChartFrame';
-import { RenewalTimeline } from '@/components/charts/RenewalTimeline';
 import { formatMoney } from '@/lib/money';
 import { formatDate, relativeDays } from '@/lib/utils';
 
@@ -182,14 +181,6 @@ export function RenewalsView({
     }
   };
 
-  const timelineItems = filtered.map((r) => ({
-    id: r.subscriptionId,
-    name: r.name,
-    days: r.days,
-    amountGbp: r.amountGbp,
-    cardNeedsTopUp: r.cardNeedsTopUp,
-  }));
-
   return (
     <div className="space-y-4">
       {/* ── One filter row above everything it scopes ─────────────────── */}
@@ -314,8 +305,9 @@ export function RenewalsView({
               <EmptyState icon={CalendarClock} title="Nothing to plot" description="No payments fall in this period on the current filters." compact />
             ) : (
               <ChartFrame
+                tableOnly
                 height={150}
-                caption="Weeks are shaded by the amount falling due. A diagonal hatch marks a week containing a charge against a card that will not cover it, so the warning survives greyscale printing and colour-vision deficiency."
+                caption={`Every payment falling due in the next ${days} days, earliest first.${filtered.length > 60 ? ` Showing the first 60 of ${filtered.length}.` : ''}`}
                 table={
                   <MiniTable
                     head={['Subscription', 'Due', 'Amount', 'Card']}
@@ -325,7 +317,7 @@ export function RenewalsView({
                   />
                 }
               >
-                <RenewalTimeline items={timelineItems} weeks={Math.round(days / 7)} height={150} />
+                {null}
               </ChartFrame>
             )}
           </TileBody>

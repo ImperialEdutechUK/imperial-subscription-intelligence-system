@@ -1,6 +1,6 @@
 'use client';
 
-import { useCallback, useEffect, useState, useSyncExternalStore } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import {
@@ -40,25 +40,6 @@ const NAV = [
 type Theme = 'light' | 'dark';
 type Density = 'comfortable' | 'compact';
 
-/**
- * Whether the operating system is asking for a dark interface.
- *
- * Read through `useSyncExternalStore` rather than an effect, because that is
- * exactly what it is for — subscribing to a browser API that lives outside
- * React. The server snapshot is `false`, which matches what the server renders.
- */
-function usePrefersDark(): boolean {
-  return useSyncExternalStore(
-    (onChange) => {
-      const mq = window.matchMedia('(prefers-color-scheme: dark)');
-      mq.addEventListener('change', onChange);
-      return () => mq.removeEventListener('change', onChange);
-    },
-    () => window.matchMedia('(prefers-color-scheme: dark)').matches,
-    () => false,
-  );
-}
-
 export function AppShell({
   children,
   orgName,
@@ -73,7 +54,7 @@ export function AppShell({
   initialTheme: Theme;
   initialDensity: Density;
   initialCollapsed: boolean;
-  /** False until the user has expressed a preference, in which case the OS decides. */
+  /** False until the user has explicitly picked a theme; light is used until then. */
   themeChosen: boolean;
   /** Null on the sign-in page, where there is nobody to sign out. */
   user: { name: string; email: string; role: string } | null;
@@ -84,8 +65,12 @@ export function AppShell({
   const [collapsed, setCollapsed] = useState(initialCollapsed);
   const [paletteOpen, setPaletteOpen] = useState(false);
 
-  const prefersDark = usePrefersDark();
-  const theme: Theme = chosenTheme ?? (prefersDark ? 'dark' : 'light');
+  // Light unless the person has explicitly asked for dark. The operating
+  // system's preference is deliberately not consulted: this is a shared
+  // internal tool that is printed and screen-shared, and it should look the
+  // same on every machine rather than changing with whoever's laptop is set to
+  // dark mode. The toggle below still switches, and that choice persists.
+  const theme: Theme = chosenTheme ?? 'light';
 
   // Preferences live in cookies rather than localStorage so the server can
   // render the correct theme in the first byte of HTML — no flash, and nothing
@@ -95,8 +80,8 @@ export function AppShell({
     document.cookie = `${key}=${value}; path=/; max-age=31536000; samesite=lax`;
   };
 
-  // Keeps the document attribute in step when the OS preference decides the
-  // theme. Mutating the DOM is what an effect is for; no state is set here.
+  // Keeps the document attribute in step with the resolved theme. Mutating the
+  // DOM is what an effect is for; no state is set here.
   useEffect(() => {
     document.documentElement.setAttribute('data-theme', theme);
   }, [theme]);

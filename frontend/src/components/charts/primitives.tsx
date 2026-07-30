@@ -5,14 +5,29 @@ import { formatMoney } from '@/lib/money';
 
 // ─────────────────────────────────────────────────────────────── utilities ──
 
+/**
+ * Axis ticks from 0 up to at least `max`.
+ *
+ * The last tick MUST be >= max. Callers use it as the scale maximum, so a top
+ * tick below the data means every value divides to more than 1 and renders
+ * above the plot area — the line then draws outside the card entirely. The
+ * previous implementation walked `v <= max` and stopped at the largest multiple
+ * of `step` below it, which understated the scale by up to 1.7x.
+ */
 export function niceTicks(max: number, count = 4): number[] {
   if (max <= 0) return [0];
   const raw = max / count;
   const mag = 10 ** Math.floor(Math.log10(raw));
   const norm = raw / mag;
   const step = (norm <= 1 ? 1 : norm <= 2 ? 2 : norm <= 5 ? 5 : 10) * mag;
+
+  // Round the top up to the next whole step so the range always covers `max`.
+  // The epsilon stops a value already sitting exactly on a step from adding a
+  // redundant empty band above it.
+  const top = Math.ceil((max - step * 1e-9) / step) * step;
+
   const ticks: number[] = [];
-  for (let v = 0; v <= max + step * 0.001; v += step) ticks.push(v);
+  for (let i = 0; i * step <= top + step * 1e-9; i++) ticks.push(i * step);
   return ticks;
 }
 

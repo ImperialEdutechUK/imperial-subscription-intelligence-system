@@ -1,6 +1,6 @@
 'use client';
 
-import { useMemo, useRef, useState } from 'react';
+import { useId, useMemo, useRef, useState } from 'react';
 import { formatMoney } from '@/lib/money';
 import { niceTicks, smoothPath } from './primitives';
 
@@ -33,6 +33,11 @@ export function TrendChart({
 }) {
   const wrapRef = useRef<HTMLDivElement>(null);
   const [hover, setHover] = useState<number | null>(null);
+  // Scoped ids: two of these charts on one page would otherwise share a
+  // gradient and a clip path, and the second would silently take the first's.
+  const uid = useId().replace(/:/g, '');
+  const fillId = `trend-fill-${uid}`;
+  const clipId = `trend-clip-${uid}`;
 
   const PAD = { top: 14, right: 12, bottom: 22, left: 46 };
   const VW = 600;
@@ -87,10 +92,17 @@ export function TrendChart({
         aria-label={`Monthly run-rate over ${points.length} months, ending at ${formatValue(points[points.length - 1]?.value ?? 0)}`}
       >
         <defs>
-          <linearGradient id="trend-fill" x1="0" y1="0" x2="0" y2="1">
+          <linearGradient id={fillId} x1="0" y1="0" x2="0" y2="1">
             <stop offset="0%" stopColor={color} stopOpacity="0.16" />
             <stop offset="100%" stopColor={color} stopOpacity="0.01" />
           </linearGradient>
+          {/* The smoothing curve can overshoot slightly beyond the highest
+              point. The scale now always covers the data, so this is a backstop
+              rather than the fix — but it guarantees nothing is ever drawn
+              outside the plot, whatever the values. */}
+          <clipPath id={clipId}>
+            <rect x={PAD.left} y={0} width={plotW} height={PAD.top + plotH} />
+          </clipPath>
         </defs>
 
         {/* Grid: solid hairlines one shade off the surface, never dashed. */}
@@ -106,8 +118,10 @@ export function TrendChart({
           );
         })}
 
-        {showArea && area ? <path d={area} fill="url(#trend-fill)" /> : null}
-        <path d={line} fill="none" stroke={color} strokeWidth={2} vectorEffect="non-scaling-stroke" strokeLinecap="round" strokeLinejoin="round" />
+        <g clipPath={`url(#${clipId})`}>
+          {showArea && area ? <path d={area} fill={`url(#${fillId})`} /> : null}
+          <path d={line} fill="none" stroke={color} strokeWidth={2} vectorEffect="non-scaling-stroke" strokeLinecap="round" strokeLinejoin="round" />
+        </g>
 
         {annotate?.map((a) => {
           const c = coords[a.index];

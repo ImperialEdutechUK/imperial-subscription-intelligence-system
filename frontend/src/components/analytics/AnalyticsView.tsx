@@ -239,6 +239,7 @@ export function AnalyticsView({ data }: { data: AnalyticsData }) {
         <TileHeader title="How subscription costs are distributed" subtitle="Count of subscriptions in each monthly cost band" icon={BarChart3} />
         <TileBody>
           <ChartFrame
+            defaultView="table"
             height={190}
             caption={`Bars count subscriptions, not pounds. A long right tail means a few expensive tools alongside many cheap ones — which is the usual shape, and why the median (${s.median != null ? formatMoney(s.median) : '—'}) describes a typical subscription better than the mean (${s.mean != null ? formatMoney(s.mean) : '—'}).`}
             table={<MiniTable head={['Subscription', 'Monthly']} rows={data.names.map((nm, i) => [nm, formatMoney(data.values[i])]).sort((a, b) => String(b[1]).localeCompare(String(a[1])))} />}
@@ -271,6 +272,7 @@ export function AnalyticsView({ data }: { data: AnalyticsData }) {
         />
         <TileBody>
           <ChartFrame
+            defaultView="table"
             height={230}
             caption={
               s.pareto
@@ -313,6 +315,7 @@ export function AnalyticsView({ data }: { data: AnalyticsData }) {
         />
         <TileBody>
           <ChartFrame
+            defaultView="table"
             height={170}
             caption={data.coverageNote}
             table={<MiniTable head={['Month', 'Run-rate']} rows={data.months.map((m) => [m.label, formatMoney(m.monthlyGbp * (trendMode === 'monthly' ? 1 : 12))])} />}
@@ -327,6 +330,7 @@ export function AnalyticsView({ data }: { data: AnalyticsData }) {
         <TileHeader title="Spend by category" subtitle="Where consolidation would have the most effect" icon={Layers} />
         <TileBody>
           <ChartFrame
+            defaultView="table"
             caption="Several tools in one category is not automatically duplication — but it is the first place to look for it."
             table={<MiniTable head={['Category', 'Monthly', 'Annual', 'Tools']} rows={data.byCategory.map((c) => [c.label, formatMoney(c.monthlyGbp), formatMoney(c.annualGbp), c.count])} />}
           >
@@ -349,6 +353,7 @@ export function AnalyticsView({ data }: { data: AnalyticsData }) {
         <TileHeader title="How that spend is billed" subtitle="Fixed commitments against variable ones" icon={BarChart3} />
         <TileBody>
           <ChartFrame
+            defaultView="table"
             caption="Usage-based and credit top-up spend is estimated rather than contracted. A large share of variable spend makes the annual figure less predictable, which matters more to Finance than the total."
             table={<MiniTable head={['Billing', 'Monthly', 'Count']} rows={data.byBillingModel.map((b) => [b.label, formatMoney(b.monthlyGbp), b.count])} />}
           >

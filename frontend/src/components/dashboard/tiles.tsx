@@ -16,7 +16,7 @@ import {
 import { BentoTile, TileHeader, TileBody, Badge, Stat, Meter, EmptyState, ReliabilityTag, colorForIndex } from '@/components/ui/kit';
 import { LinkButton, InfoTip, Segmented } from '@/components/ui/controls';
 import { ChartFrame, MiniTable } from '@/components/charts/ChartFrame';
-import { RankedBars, DivergingBars } from '@/components/charts/primitives';
+import { DivergingBars } from '@/components/charts/primitives';
 import { TrendChart } from '@/components/charts/TrendChart';
 import { Treemap } from '@/components/charts/Treemap';
 import { RenewalTimeline, SharedCostFlow, type FlowLink, type TimelineItem } from '@/components/charts/RenewalTimeline';
@@ -103,7 +103,8 @@ export function DepartmentTile({
           <EmptyState icon={Layers} title="No departments yet" description="Add departments, then attach subscriptions to them." compact />
         ) : (
           <ChartFrame
-            caption="Colour is each department's own identity colour, set on the Departments page. Percentages are of total monthly spend."
+            tableOnly
+            caption="Shared subscriptions are split by the method set on each one, so these figures reconcile to the portfolio total exactly."
             table={
               <MiniTable
                 head={['Department', 'Monthly', 'Annual', 'Subs', 'Per head']}
@@ -117,18 +118,7 @@ export function DepartmentTile({
               />
             }
           >
-            <RankedBars
-              data={data.map((d) => ({
-                key: d.id,
-                label: d.name,
-                value: d.monthlyGbp,
-                color: d.color,
-                sublabel: `${d.subscriptionCount} subscriptions${d.sharedCount ? `, ${d.sharedCount} shared` : ''}${
-                  d.perHeadMonthly != null ? ` · ${formatMoney(d.perHeadMonthly)} per person` : ''
-                }`,
-              }))}
-              labelWidth={106}
-            />
+            {null}
           </ChartFrame>
         )}
       </TileBody>

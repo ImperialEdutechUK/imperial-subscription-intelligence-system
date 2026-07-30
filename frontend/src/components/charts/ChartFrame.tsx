@@ -25,6 +25,8 @@ export function ChartFrame({
   height,
   dense,
   toolbar,
+  defaultView = 'chart',
+  tableOnly = false,
 }: {
   legend?: LegendItem[];
   table: ReactNode;
@@ -33,8 +35,14 @@ export function ChartFrame({
   height?: number;
   dense?: boolean;
   toolbar?: ReactNode;
+  /** Which view opens first. The table is the better default where the figures
+   *  are read rather than compared at a glance. */
+  defaultView?: 'chart' | 'table';
+  /** Drops the chart and the view toggle entirely — the table is the only view. */
+  tableOnly?: boolean;
 }) {
-  const [view, setView] = useState<'chart' | 'table'>('chart');
+  const [view, setView] = useState<'chart' | 'table'>(tableOnly ? 'table' : defaultView);
+  const showing = tableOnly ? 'table' : view;
 
   return (
     <div className="flex h-full min-h-0 flex-col">
@@ -56,20 +64,22 @@ export function ChartFrame({
         </div>
         <div className="flex shrink-0 items-center gap-2">
           {toolbar}
-          <Segmented
-            size="xs"
-            value={view}
-            onChange={setView}
-            options={[
-              { value: 'chart', label: <BarChart3 size={11} aria-label="Chart view" />, title: 'Chart view' },
-              { value: 'table', label: <Table2 size={11} aria-label="Table view" />, title: 'Table view — the same numbers, readable by screen readers' },
-            ]}
-          />
+          {!tableOnly ? (
+            <Segmented
+              size="xs"
+              value={view}
+              onChange={setView}
+              options={[
+                { value: 'chart', label: <BarChart3 size={11} aria-label="Chart view" />, title: 'Chart view' },
+                { value: 'table', label: <Table2 size={11} aria-label="Table view" />, title: 'Table view — the same numbers, readable by screen readers' },
+              ]}
+            />
+          ) : null}
         </div>
       </div>
 
       <div className="min-h-0 flex-1" style={height ? { minHeight: height } : undefined}>
-        {view === 'chart' ? children : <div className="h-full overflow-auto">{table}</div>}
+        {showing === 'chart' ? children : <div className="h-full overflow-auto">{table}</div>}
       </div>
 
       {caption ? (
