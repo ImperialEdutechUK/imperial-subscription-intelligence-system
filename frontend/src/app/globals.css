@@ -108,21 +108,27 @@
   --neutral-bg: var(--n-100);
   --neutral-border: var(--n-200);
 
-  /* ── Elevation. Two-layer shadows: a tight contact shadow plus a soft
-        ambient one, which reads as depth without looking heavy. ────────── */
-  --shadow-xs: 0 1px 2px hsl(var(--brand-h) 20% 12% / 0.05);
-  --shadow-sm: 0 1px 2px hsl(var(--brand-h) 20% 12% / 0.06), 0 2px 6px hsl(var(--brand-h) 20% 12% / 0.04);
-  --shadow-md: 0 2px 4px hsl(var(--brand-h) 20% 12% / 0.06), 0 8px 20px hsl(var(--brand-h) 20% 12% / 0.07);
-  --shadow-lg: 0 4px 8px hsl(var(--brand-h) 20% 12% / 0.07), 0 18px 40px hsl(var(--brand-h) 20% 12% / 0.1);
-  --shadow-brand: 0 4px 14px hsl(var(--brand-h) var(--brand-s) var(--brand-l) / 0.25);
+  /* ── Elevation.
+        Separation is carried by a hairline border; shadow is reserved for
+        things that genuinely float above the page. Stacked ambient shadows on
+        every resting card read as a dashboard template rather than a tool, and
+        the coloured brand glow is not a depth cue at all. Kept: a hairline for
+        controls, a real shadow for menus, a deeper one for dialogs. ─────── */
+  --shadow-xs: 0 1px 1px hsl(var(--brand-h) 12% 12% / 0.04);
+  --shadow-sm: 0 1px 2px hsl(var(--brand-h) 12% 12% / 0.06);
+  --shadow-md: 0 4px 12px hsl(var(--brand-h) 12% 12% / 0.08), 0 1px 2px hsl(var(--brand-h) 12% 12% / 0.06);
+  --shadow-lg: 0 12px 32px hsl(var(--brand-h) 12% 12% / 0.12), 0 2px 6px hsl(var(--brand-h) 12% 12% / 0.06);
+  --shadow-brand: 0 1px 2px hsl(var(--brand-h) 12% 12% / 0.10);
 
   /* ── Geometry ─────────────────────────────────────────────────────────── */
-  --radius-xs: 6px;
-  --radius-sm: 8px;
-  --radius-md: 12px;
-  --radius-lg: 16px;
-  --radius-xl: 20px;
-  --radius-2xl: 26px;
+  /* Tightened toward the register this product sits in. A 26px corner on a
+     financial register reads consumer; 8-12px reads as a tool. */
+  --radius-xs: 4px;
+  --radius-sm: 6px;
+  --radius-md: 8px;
+  --radius-lg: 10px;
+  --radius-xl: 12px;
+  --radius-2xl: 14px;
   --radius-pill: 999px;
 
   /* ── Density: `comfortable` (default) and `compact`, toggled at runtime.
@@ -224,10 +230,10 @@
   --neutral-bg: hsl(var(--brand-h) 12% 16%);
   --neutral-border: hsl(var(--brand-h) 12% 24%);
 
-  --shadow-xs: 0 1px 2px hsl(0 0% 0% / 0.4);
-  --shadow-sm: 0 1px 2px hsl(0 0% 0% / 0.45), 0 2px 6px hsl(0 0% 0% / 0.3);
-  --shadow-md: 0 2px 4px hsl(0 0% 0% / 0.45), 0 8px 20px hsl(0 0% 0% / 0.38);
-  --shadow-lg: 0 4px 8px hsl(0 0% 0% / 0.5), 0 18px 40px hsl(0 0% 0% / 0.45);
+  --shadow-xs: 0 1px 1px hsl(0 0% 0% / 0.30);
+  --shadow-sm: 0 1px 2px hsl(0 0% 0% / 0.35);
+  --shadow-md: 0 4px 12px hsl(0 0% 0% / 0.45), 0 1px 2px hsl(0 0% 0% / 0.35);
+  --shadow-lg: 0 12px 32px hsl(0 0% 0% / 0.55), 0 2px 6px hsl(0 0% 0% / 0.4);
 
   /* Dark-mode series are re-derived against the dark surface and re-validated,
      not lightened copies of the light set. Same hue identity in both themes so
@@ -305,12 +311,14 @@
   --color-danger: var(--danger);
   --color-info: var(--info);
 
-  --radius-xs: 6px;
-  --radius-sm: 8px;
-  --radius-md: 12px;
-  --radius-lg: 16px;
-  --radius-xl: 20px;
-  --radius-2xl: 26px;
+  /* Tightened toward the register this product sits in. A 26px corner on a
+     financial register reads consumer; 8-12px reads as a tool. */
+  --radius-xs: 4px;
+  --radius-sm: 6px;
+  --radius-md: 8px;
+  --radius-lg: 10px;
+  --radius-xl: 12px;
+  --radius-2xl: 14px;
 
 }
 
@@ -444,7 +452,6 @@ body {
   background: var(--surface-raised);
   border: 1px solid var(--border-subtle);
   border-radius: var(--radius-lg);
-  box-shadow: var(--shadow-sm);
   overflow: hidden;
   transition:
     box-shadow var(--dur-base) var(--ease-out),
@@ -452,17 +459,14 @@ body {
     transform var(--dur-base) var(--ease-out);
 }
 .bento-tile[data-interactive='true']:hover {
-  box-shadow: var(--shadow-md);
-  border-color: var(--border-default);
-  transform: translateY(-2px);
+  border-color: var(--border-strong);
+  background: var(--surface-hover);
 }
-.bento-tile[data-accent='true']::before {
-  content: '';
-  position: absolute;
-  inset: 0 0 auto 0;
-  height: 3px;
-  background: linear-gradient(90deg, var(--brand-500), var(--brand-400) 55%, transparent);
-  z-index: 1;
+/* An accented tile is now marked by a slightly stronger hairline, not by a
+   coloured bar laid across its top edge. The emphasis survives; the decoration
+   does not. */
+.bento-tile[data-accent='true'] {
+  border-color: var(--border-default);
 }
 
 /* ── Contextual interaction layers ────────────────────────────────────────

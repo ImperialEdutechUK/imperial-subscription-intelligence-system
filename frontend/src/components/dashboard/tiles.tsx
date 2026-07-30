@@ -116,13 +116,14 @@ export function DepartmentTile({
                 ? `Shared subscriptions are split by the method set on each one, so these reconcile to the portfolio total exactly. ${dormant.length} department${dormant.length === 1 ? '' : 's'} carry no subscriptions: ${dormant.map((d) => d.name).join(', ')}.`
                 : 'Shared subscriptions are split by the method set on each one, so these figures reconcile to the portfolio total exactly.'
             }
-            // Decimals are fixed per column rather than left to the default,
-            // which picks them per value and printed "£3,083" directly above
-            // "£906.45" in the same column. Whole pounds for the spend columns;
-            // per-head keeps its pence, where a pound is a lot.
+            // Four columns, not five: the identity dot widened the name column
+            // and pushed per-head spend outside the tile. It is a secondary,
+            // derived figure and it survives in full on the Departments page.
+            // Decimals are fixed per column rather than per value, which had
+            // printed "£3,083" directly above "£906.45" in one column.
             table={
               <MiniTable
-                head={['Department', 'Monthly', 'Annual', 'Subs', 'Per head']}
+                head={['Department', 'Monthly', 'Annual', 'Subs']}
                 rows={funded.map((d) => [
                   // The identity colour was previously carried by the bar chart
                   // this table replaced. Without it the department is named in
@@ -134,7 +135,6 @@ export function DepartmentTile({
                   formatMoney(d.monthlyGbp, 'GBP', { decimals: 0 }),
                   formatMoney(d.monthlyGbp * 12, 'GBP', { decimals: 0 }),
                   d.subscriptionCount,
-                  d.perHeadMonthly != null ? formatMoney(d.perHeadMonthly, 'GBP', { decimals: 2 }) : '—',
                 ])}
               />
             }
