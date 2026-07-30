@@ -45,7 +45,7 @@ import {
   type PreparedTable,
 } from '@/lib/import-parse';
 
-type Tab = 'paste' | 'file' | 'export';
+type Tab = 'import' | 'export';
 
 interface Ingested {
   /** Where the rows came from, shown back to the reader. */
@@ -510,7 +510,7 @@ export function ImportWorkbench({
   canEdit: boolean;
 }) {
   const router = useRouter();
-  const [tab, setTab] = useState<Tab>(canEdit ? 'paste' : 'export');
+  const [tab, setTab] = useState<Tab>(canEdit ? 'import' : 'export');
   const [text, setText] = useState('');
   const [ingested, setIngested] = useState<Ingested | null>(null);
   const [hasHeader, setHasHeader] = useState(true);
@@ -615,7 +615,7 @@ export function ImportWorkbench({
       <div className="space-y-4">
         <Panel title="Importing needs edit access">
           <p className="text-xs leading-relaxed" style={{ color: 'var(--text-secondary)' }}>
-            Your account is read-only, so the paste and upload tabs are not shown. Bringing data in changes the register
+            Your account is read-only, so the import tab is not shown. Bringing data in changes the register
             that every dashboard is derived from, which is why it is limited to editors and administrators. Ask an
             administrator to change your role if you need to import. Exports are available to you in full and are listed
             below.
@@ -627,8 +627,7 @@ export function ImportWorkbench({
   }
 
   const tabs: { value: Tab; label: React.ReactNode; title: string }[] = [
-    { value: 'paste', label: 'Paste from a spreadsheet', title: 'Copy rows out of Excel and paste them in' },
-    { value: 'file', label: 'Upload a CSV file', title: 'Read a .csv or .tsv file from your machine' },
+    { value: 'import', label: 'Bring data in', title: 'Paste rows from a spreadsheet, or drop a CSV file' },
     { value: 'export', label: 'Export', title: 'Download the register in several shapes' },
   ];
 
@@ -636,49 +635,16 @@ export function ImportWorkbench({
     <div className="space-y-4">
       <Segmented options={tabs} value={tab} onChange={setTab} />
 
-      {tab === 'paste' ? (
+      {/* One way in, not a choice of three.
+          Pasting, dropping a file and picking a file all end at the same
+          `ingest()` call, so making the user pick a method first was a decision
+          the interface could take for them. The box accepts a paste, the same
+          box accepts a dropped file, and the button covers the case where
+          neither is convenient. */}
+      {tab === 'import' ? (
         <Panel
-          title="Paste rows from your spreadsheet"
-          description="Select the rows in Excel, copy them, and paste below. Tab, comma and semicolon separated text are all read. Include the heading row if you have one — the columns are matched to fields for you, and you can correct any that are wrong before anything is written."
-        >
-          <div className="space-y-2">
-            <Textarea
-              value={text}
-              rows={10}
-              spellCheck={false}
-              placeholder={PLACEHOLDER}
-              aria-label="Rows pasted from a spreadsheet"
-              onChange={(e) => setText(e.target.value)}
-              onPaste={(e) => {
-                const pasted = e.clipboardData.getData('text');
-                if (pasted.trim() === '') return;
-                e.preventDefault();
-                setText(pasted);
-                readText(pasted, 'Pasted from a spreadsheet');
-              }}
-            />
-            <div className="flex flex-wrap items-center gap-2">
-              <Button variant="primary" icon={ClipboardPaste} onClick={() => readText(text, 'Pasted from a spreadsheet')}>
-                Read this
-              </Button>
-              {ingested || text ? (
-                <Button variant="ghost" icon={X} onClick={reset}>
-                  Start again
-                </Button>
-              ) : null}
-              <span className="text-meta" style={{ color: 'var(--text-tertiary)' }}>
-                Pasting replaces whatever is in the box and reads the rows straight away. Nothing is saved until you
-                choose to import.
-              </span>
-            </div>
-          </div>
-        </Panel>
-      ) : null}
-
-      {tab === 'file' ? (
-        <Panel
-          title="Upload a CSV file"
-          description="Save your sheet as CSV or tab-separated text, then drop it here. It is read in your browser and checked before anything is sent."
+          title="Bring your subscriptions in"
+          description="Copy rows straight out of Excel and paste them below, or drop a CSV file onto the box. Tab, comma and semicolon separated text are all read. Include your heading row — the columns are matched to fields for you, and you can correct any that are wrong before anything is written."
           action={
             <LinkButton href="/api/export?format=template" download size="xs" icon={FileDown}>
               Download a blank template
@@ -686,6 +652,7 @@ export function ImportWorkbench({
           }
         >
           <div
+            className="space-y-2"
             onDragOver={(e) => {
               e.preventDefault();
               setDragging(true);
@@ -697,29 +664,59 @@ export function ImportWorkbench({
               const file = e.dataTransfer.files?.[0];
               if (file) void readFile(file);
             }}
-            className="rounded-[var(--radius-md)] border border-dashed p-6 text-center transition-colors"
-            style={{
-              borderColor: dragging ? 'var(--brand-400)' : 'var(--border-default)',
-              background: dragging ? 'var(--brand-50)' : 'var(--surface-sunken)',
-            }}
           >
-            <Upload size={18} strokeWidth={1.8} className="mx-auto" style={{ color: 'var(--text-tertiary)' }} aria-hidden />
-            <p className="mt-2 text-sm" style={{ color: 'var(--text-primary)' }}>
-              Drop a .csv or .tsv file here
-            </p>
-            <p className="mt-0.5 text-xs" style={{ color: 'var(--text-tertiary)' }}>
-              The file stays in your browser until you press Import.
-            </p>
-            <div className="mt-3 flex justify-center gap-2">
+            <div className="relative">
+              <Textarea
+                value={text}
+                rows={10}
+                spellCheck={false}
+                placeholder={PLACEHOLDER}
+                aria-label="Rows pasted from a spreadsheet, or drop a CSV file here"
+                onChange={(e) => setText(e.target.value)}
+                onPaste={(e) => {
+                  const pasted = e.clipboardData.getData('text');
+                  if (pasted.trim() === '') return;
+                  e.preventDefault();
+                  setText(pasted);
+                  readText(pasted, 'Pasted from a spreadsheet');
+                }}
+              />
+              {/* Only while a file is over the box: the rest of the time this is
+                  a plain textarea, not a dashed drop zone shouting for attention. */}
+              {dragging ? (
+                <div
+                  className="pointer-events-none absolute inset-0 grid place-items-center rounded-[var(--radius-sm)] border-2 border-dashed"
+                  style={{ borderColor: 'var(--brand-400)', background: 'color-mix(in srgb, var(--brand-50) 92%, transparent)' }}
+                >
+                  <span className="flex items-center gap-2 text-sm font-medium" style={{ color: 'var(--brand-700)' }}>
+                    <Upload size={16} strokeWidth={2} aria-hidden />
+                    Drop the file to read it
+                  </span>
+                </div>
+              ) : null}
+            </div>
+
+            <div className="flex flex-wrap items-center gap-2">
               <Button icon={Upload} onClick={() => fileInput.current?.click()}>
                 Choose a file
               </Button>
-              {ingested ? (
+              {/* Pasting reads immediately, so this only appears for text that
+                  was typed or edited by hand and has not been read yet. */}
+              {text && !ingested ? (
+                <Button variant="ghost" icon={ClipboardPaste} onClick={() => readText(text, 'Entered by hand')}>
+                  Read these rows
+                </Button>
+              ) : null}
+              {ingested || text ? (
                 <Button variant="ghost" icon={X} onClick={reset}>
                   Start again
                 </Button>
               ) : null}
+              <span className="text-meta" style={{ color: 'var(--text-tertiary)' }}>
+                Pasting or dropping a file reads the rows straight away. Nothing is saved until you press Import.
+              </span>
             </div>
+
             <input
               ref={fileInput}
               type="file"
@@ -807,22 +804,9 @@ export function ImportWorkbench({
 
       {outcome ? <ResultPanel outcome={outcome} onDismiss={() => setOutcome(null)} /> : null}
 
-      {tab !== 'export' && !ingested ? (
-        <div
-          className="rounded-[var(--radius-lg)] border"
-          style={{ background: 'var(--surface-raised)', borderColor: 'var(--border-subtle)' }}
-        >
-          <EmptyState
-            icon={tab === 'paste' ? ClipboardPaste : Upload}
-            title="Nothing read yet"
-            description={
-              tab === 'paste'
-                ? 'Paste a block of rows above. The columns will be matched to fields and checked before anything is written.'
-                : 'Choose or drop a file above. It is read and checked in your browser before anything is written.'
-            }
-          />
-        </div>
-      ) : null}
+      {/* A second empty card under an empty box, repeating the instruction the
+          box already carries in its description and placeholder, was half the
+          height of this page before anything had been done. */}
 
       <p className="flex items-start gap-1.5 px-1 text-meta leading-relaxed" style={{ color: 'var(--text-tertiary)' }}>
         <Lock size={12} className="mt-0.5 shrink-0" aria-hidden />
