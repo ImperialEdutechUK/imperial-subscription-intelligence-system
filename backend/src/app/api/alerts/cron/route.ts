@@ -1,5 +1,6 @@
 import { buildDigest, dispatchToTeams } from '@/services/alerts';
 import { getAlertSettings } from '@/services/settings';
+import { refreshFxRates } from '@/services/fx-refresh';
 
 /**
  * The scheduled entry point for the reminder.
@@ -46,6 +47,12 @@ export async function GET(request: Request) {
     );
   }
 
+  // Rates first: the digest quotes money, so it should quote today's numbers.
+  // A refresh failure must not stop the reminder — stale rates are still
+  // usable and are labelled with the date they were published.
+  const fx = await refreshFxRates();
+  if (!fx.ok) console.error('Exchange rates were not refreshed:', fx.error);
+
   const settings = await getAlertSettings();
   const webhook = settings.teamsWebhookUrl || process.env.TEAMS_WEBHOOK_URL || '';
   const digest = await buildDigest();
@@ -54,7 +61,7 @@ export async function GET(request: Request) {
   // regardless of content stops being read within a fortnight.
   const force = url.searchParams.get('force') === '1';
   if (!digest.needsAttention && !force) {
-    return Response.json({ sent: false, reason: 'Nothing needs attention today.', summary: digest.summary });
+    return Response.json({ sent: false, reason: 'Nothing needs attention today.', summary: digest.summary, fx });
   }
 
   if (!webhook) {
@@ -72,5 +79,5 @@ export async function GET(request: Request) {
   if (!result.ok) {
     return Response.json({ sent: false, error: `Teams rejected the message: ${result.detail}` }, { status: 502 });
   }
-  return Response.json({ sent: true, summary: digest.summary });
+  return Response.json({ sent: true, summary: digest.summary, fx });
 }

@@ -146,7 +146,18 @@ for (const c of CASES) {
   const after = await preview();
 
   check('The currency dropdown changes the converted figure', before && after && before.monthly !== after.monthly, `${before?.monthly} → ${after?.monthly}`);
-  check('$100/month converts to roughly £78 at the seeded rate', after != null && Math.abs(after.monthly - 78) < 1.5, `showed ${after?.monthly}`);
+
+  // Deliberately not asserting an exact figure. The USD rate used to be a fixed
+  // seeded 0.78, so "about £78" was safe to hard-code; rates are now refreshed
+  // from the published source on a schedule, and pinning the number here would
+  // fail every time the pound moved. What must hold is that a $100 subscription
+  // is converted rather than passed through at 1:1, and lands somewhere a
+  // sterling/dollar rate could plausibly put it.
+  check(
+    '$100/month is converted into sterling, not passed through at 1:1',
+    after != null && after.monthly !== 100 && after.monthly > 50 && after.monthly < 100,
+    `showed ${after?.monthly}`,
+  );
   await currency.selectOption('GBP');
   await page.waitForTimeout(350);
 }

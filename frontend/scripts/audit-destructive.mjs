@@ -66,29 +66,37 @@ async function main() {
 
   const rateRow = (code) => page.locator('li', { hasText: `1 ${code} =` });
 
-  // Pick a currency that is not already listed, so the test is a true create.
+  // Every supported currency now carries a rate, because they are refreshed
+  // from the published source on a schedule rather than typed in one at a time.
+  // So this exercises the same write path by overwriting a rate and putting the
+  // real one back, instead of creating and deleting a currency that had none.
   const currencySelect = page.locator('select').first();
-  const options = await currencySelect.locator('option').allTextContents();
-  const existing = await page.locator('li:has-text("1 ")').allTextContents();
-  const freeCode = options.map((o) => o.trim()).find((c) => !existing.some((e) => e.includes(`1 ${c} =`)));
-  check('An unused currency is available to test with', !!freeCode, `options=${options.join(',')}`);
+  const code = (await currencySelect.locator('option').allTextContents()).map((o) => o.trim()).pop();
+  check('A currency is available to test with', !!code);
 
-  if (freeCode) {
-    await currencySelect.selectOption(freeCode);
+  if (code) {
+    const originalRow = await rateRow(code).first().innerText().catch(() => '');
+    const originalRate = (originalRow.match(/=\s*([0-9.]+)\s*GBP/) || [])[1];
+    check(`${code} has a rate on record to restore afterwards`, !!originalRate, originalRow.replace(/\n/g, ' '));
+
+    await currencySelect.selectOption(code);
     await page.getByLabel('Value in GBP').fill('0.4242');
     await page.getByLabel('Source').fill('Automated destructive audit');
     await page.getByRole('button', { name: 'Set', exact: true }).click();
     await page.waitForTimeout(1200);
 
-    const created = await rateRow(freeCode).count();
-    check(`"Set" creates the ${freeCode} rate`, created > 0);
+    const shown = await rateRow(code).first().innerText().catch(() => '');
+    check(`"Set" overwrites the ${code} rate`, shown.includes('0.4242'), shown.replace(/\n/g, ' '));
 
-    const shown = created > 0 ? await rateRow(freeCode).first().innerText() : '';
-    check('The new rate shows the value that was entered', shown.includes('0.4242'), shown.replace(/\n/g, ' '));
-
-    await rateRow(freeCode).first().getByRole('button', { name: 'Remove' }).click();
-    await page.waitForTimeout(1200);
-    check(`"Remove" deletes the ${freeCode} rate again`, (await rateRow(freeCode).count()) === 0);
+    if (originalRate) {
+      await currencySelect.selectOption(code);
+      await page.getByLabel('Value in GBP').fill(originalRate);
+      await page.getByLabel('Source').fill('Restored by the automated audit');
+      await page.getByRole('button', { name: 'Set', exact: true }).click();
+      await page.waitForTimeout(1200);
+      const restored = await rateRow(code).first().innerText().catch(() => '');
+      check(`The original ${code} rate is put back`, restored.includes(originalRate), restored.replace(/\n/g, ' '));
+    }
   }
 
   // ── Settings: reminders (change, save, restore) ───────────────────────────
