@@ -167,6 +167,18 @@ export const DEPARTMENTS: DepartmentSeed[] = [
     headEmail: null,
     headcount: null,
   },
+  {
+    code: 'CS',
+    name: 'Customer Service',
+    // A teal that is not already taken and stays clear of Academic's green and
+    // IT's cyan at the sizes these colours are actually used — a 10px dot in a
+    // table row and a 4px rule on a card.
+    colorHex: '#0F766E',
+    costCentre: 'CC-5000',
+    headName: null,
+    headEmail: null,
+    headcount: null,
+  },
 ];
 
 // ──────────────────────────────────────────────────────────  Exchange rates ──

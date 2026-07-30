@@ -145,13 +145,16 @@ export function DepartmentsView({
       </div>
 
       {/* ── Department cards ─────────────────────────────────────────────
-          Three across, not two: there are nine departments, so a two-column
-          grid always stranded the last one alone against an empty half. */}
-      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          Wrapping row, but capped at a third. Letting the last row stretch to
+          fill did close the gap, and looked like a fault: one department alone
+          on a row became a full-width banner with its figures stranded at the
+          left. A card that is always the same size, with the row simply ending
+          early, reads as a list that finished. */}
+      <div className="flex flex-wrap gap-4">
         {ranked.map((d) => {
           const sharePct = totalMonthly > 0 ? (d.monthlyGbp / totalMonthly) * 100 : 0;
           return (
-            <BentoTile key={d.id} col={4} row={3} interactive>
+            <BentoTile key={d.id} col={4} row={3} interactive className="min-w-[19rem] flex-1 basis-[30%] max-w-[calc((100%-2rem)/3)]">
               <div className="h-1 w-full shrink-0" style={{ background: d.color }} aria-hidden />
               <TileHeader
                 title={

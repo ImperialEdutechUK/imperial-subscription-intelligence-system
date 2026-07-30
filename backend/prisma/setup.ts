@@ -82,19 +82,33 @@ async function main() {
   }
 
   // ── Exchange rates ──────────────────────────────────────────────────────
+  const seededRates: string[] = [];
+  const keptRates: string[] = [];
+
   for (const r of EXCHANGE_RATES) {
     const code = r.code.toUpperCase().slice(0, 3);
     if (!(r.rateToGbp > 0)) {
       warn(`${code}: rate must be greater than zero. Skipped.`);
       continue;
     }
-    await prisma.fxRate.upsert({
-      where: { code },
-      create: { code, rateToGbp: r.rateToGbp, source: r.source },
-      update: { rateToGbp: r.rateToGbp, source: r.source },
-    });
+    // The rates in the config are a starting point for an empty database, not
+    // an authority over a running one. Rates are maintained automatically now,
+    // and this script is meant to be safe to re-run on a live system — writing
+    // the config value back would silently replace a current published rate
+    // with a placeholder every time somebody added a department.
+    const already = await prisma.fxRate.findUnique({ where: { code } });
+    if (already) {
+      keptRates.push(code);
+      continue;
+    }
+    await prisma.fxRate.create({ data: { code, rateToGbp: r.rateToGbp, source: r.source } });
+    seededRates.push(code);
   }
-  tick(`Exchange rates: ${EXCHANGE_RATES.length} set`);
+  tick(
+    `Exchange rates: ${seededRates.length} seeded${
+      keptRates.length ? `, ${keptRates.length} left as they are (${keptRates.join(', ')})` : ''
+    }`,
+  );
 
   // ── Settings ────────────────────────────────────────────────────────────
   const settings: Record<string, string> = {

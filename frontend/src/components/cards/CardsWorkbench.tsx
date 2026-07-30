@@ -330,9 +330,9 @@ export function CardsWorkbench({ cards, canEdit }: { cards: CardRow[]; canEdit: 
           />
         </div>
       ) : (
-        // Three across: the cards are authored as a third of the grid each, and
-        // two columns left the fifth alone against an empty half.
-        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        // Wrapping row capped at a third, so a short last row ends early rather
+        // than stretching its cards into banners.
+        <div className="flex flex-wrap gap-4">
           {ordered.map((c) => {
             const meta = metaFor(c.type);
             const risk = RISK[c.riskLevel];
@@ -340,7 +340,7 @@ export function CardsWorkbench({ cards, canEdit }: { cards: CardRow[]; canEdit: 
             const showMeter = meta.needsBalance && c.due30 > 0 && c.currentBalance != null;
 
             return (
-              <BentoTile key={c.id} col={4} row={4} className={c.riskLevel === 'URGENT' ? 'pulse-urgent' : undefined}>
+              <BentoTile key={c.id} col={4} row={4} className={`min-w-[19rem] flex-1 basis-[30%] max-w-[calc((100%-2rem)/3)] ${c.riskLevel === 'URGENT' ? 'pulse-urgent' : ''}`}>
                 <TileHeader
                   title={c.label}
                   subtitle={
