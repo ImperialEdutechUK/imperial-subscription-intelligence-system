@@ -31,7 +31,7 @@
    entire interface re-tunes — ramps, tints, focus rings, chart accents and
    dark mode included. Nothing is hard-coded to a specific red.
 
-   Default is hsl(214 84% 45%) ≈ #1266D3. The neutrals are tinted with the
+   Default is hsl(211 100% 45%) ≈ #0071E5. The neutrals are tinted with the
    same hue, so the greys read as cool near-blacks beside it and the -50/-100
    steps supply the light blues. The generated -700 step is used wherever brand
    colour carries small text, giving contrast headroom over the -500.
@@ -39,8 +39,8 @@
 
 :root {
   /* ── Brand seed ───────────────────────────────────────────────────────── */
-  --brand-h: 214;
-  --brand-s: 84%;
+  --brand-h: 211;
+  --brand-s: 100%;
   --brand-l: 45%;
 
   /* ── Derived brand ramp ───────────────────────────────────────────────── */
@@ -380,31 +380,32 @@ body {
   background-clip: content-box;
 }
 
-/* ── Bento grid ───────────────────────────────────────────────────────────
-   A 12-column grid with a fixed row unit. Tiles declare a column and row span
-   and the grid resolves the packing, which is what gives the layout its
-   characteristic mixed-size look without any tile needing to know about its
-   neighbours. Spans collapse progressively at each breakpoint. */
+/* ── Tile grid ────────────────────────────────────────────────────────────
+   No longer a twelve-column packer. Tiles declared mixed spans — 8/4, 7/5,
+   4/6/6 — and the grid resolved them into a mosaic, so nothing lined up across
+   a row and the page read as ragged. It is an even grid now: one column on a
+   phone, two from 900px, every cell the same width and every row level.
+
+   The inline spans BentoTile still writes are neutralised here rather than
+   deleted from every call site. With only two columns a `span 4` would
+   otherwise force implicit columns and quietly rebuild the mosaic — which is
+   exactly what happened on Overview, where the tiles sit in per-page section
+   grids instead of `.bento` and came out at five different widths. The rule is
+   therefore on the tile itself, not scoped to a `.bento` parent, so a tile is
+   an even cell of whatever grid it is placed in. */
 .bento {
   display: grid;
-  grid-template-columns: repeat(12, minmax(0, 1fr));
-  grid-auto-rows: minmax(84px, auto);
+  grid-template-columns: minmax(0, 1fr);
   gap: var(--density-gap);
 }
-@media (max-width: 1280px) {
-  .bento {
-    grid-template-columns: repeat(8, minmax(0, 1fr));
-  }
-}
-@media (max-width: 900px) {
-  .bento {
-    grid-template-columns: repeat(4, minmax(0, 1fr));
-  }
-}
-@media (max-width: 620px) {
+@media (min-width: 900px) {
   .bento {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
+}
+.bento-tile {
+  grid-column: auto !important;
+  grid-row: auto !important;
 }
 
 /* Touch targets.
@@ -423,31 +424,6 @@ body {
   }
 }
 
-/* Narrowing the grid above is only half the job. BentoTile writes its span as
-   an inline `grid-column`, and an inline style cannot be overridden by a
-   stylesheet without `!important`. Left alone the spans survive every
-   breakpoint, and because a `span 4` tile in a two-column grid forces four
-   *implicit* columns, the grid quietly grows back to twelve tracks — about
-   23px each on a 390px phone, which is what clipped every headline figure to
-   "£5…". These rules re-tier the spans so the collapse actually lands. */
-@media (max-width: 900px) {
-  .bento-tile {
-    grid-column: span 4 / span 4 !important;
-  }
-  /* Narrow tiles keep a two-up rhythm rather than becoming a single column too early. */
-  .bento-tile[data-col='2'],
-  .bento-tile[data-col='3'] {
-    grid-column: span 2 / span 2 !important;
-  }
-}
-@media (max-width: 620px) {
-  .bento-tile {
-    grid-column: span 2 / span 2 !important;
-    /* Authored row spans reserve height for a wide layout; on one column the
-       content decides instead, so tiles neither stretch nor clip. */
-    grid-row: auto !important;
-  }
-}
 
 .bento-tile {
   position: relative;

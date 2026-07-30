@@ -82,7 +82,7 @@ export default async function DashboardPage() {
         action={<DashboardActions />}
       />
 
-      <div className="bento">
+      <div className="space-y-5">
         <HeadlineTiles
           annualRunRate={p.totals.annualRunRateGbp}
           annualCash={p.totals.annualCashGbp}
@@ -98,11 +98,17 @@ export default async function DashboardPage() {
           renewalsNext30={next30.length}
         />
 
-        <SpendTrendTile months={months} coverageNote={p.trend.coverageNote} coverage={p.trend.coverage} />
-        <DepartmentTile data={p.byDepartment} />
+        {/* Uniform rows. The mosaic packed 8/4, 7/5 and 4/6/6 spans, so tiles
+            started and ended at different points down the page and nothing
+            lined up across a row. Every row is now an equal split. */}
+        <section className="grid gap-4 lg:grid-cols-2">
+          <SpendTrendTile months={months} coverageNote={p.trend.coverageNote} coverage={p.trend.coverage} />
+          <DepartmentTile data={p.byDepartment} />
+        </section>
 
-        <SpendMapTile data={spendMap} />
-        <RenewalRunwayTile
+        <section className="grid gap-4 lg:grid-cols-2">
+          <SpendMapTile data={spendMap} />
+          <RenewalRunwayTile
           total90={total90}
           items={next90.map((r) => ({
             id: r.subscriptionId,
@@ -111,11 +117,14 @@ export default async function DashboardPage() {
             amountGbp: r.amountGbp,
             cardNeedsTopUp: r.cardNeedsTopUp,
           }))}
-        />
+          />
+        </section>
 
-        <CardRiskTile cards={p.cards} />
-        <ObservationsTile observations={observations} />
-        <MoversTile movers={p.movers} />
+        <section className="grid gap-4 lg:grid-cols-3">
+          <CardRiskTile cards={p.cards} />
+          <ObservationsTile observations={observations} />
+          <MoversTile movers={p.movers} />
+        </section>
 
         <SharedFlowTile links={flowLinks} />
       </div>

@@ -506,6 +506,8 @@ export function HeadlineTiles({
 }) {
   return (
     <>
+      {/* Five equal cards, not one wide plus four narrow. */}
+      <section className="grid gap-4 sm:grid-cols-2 lg:grid-cols-5">
       <BentoTile col={4} row={2} accent>
         <TileBody className="pt-4">
           <Stat
@@ -561,6 +563,8 @@ export function HeadlineTiles({
           />
         </TileBody>
       </BentoTile>
+
+      </section>
 
       <BentoTile col={12} row={1}>
         {/* Stacks below `sm`. Held as one row, the label and meter were
