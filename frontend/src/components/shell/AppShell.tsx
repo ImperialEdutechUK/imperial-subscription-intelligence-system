@@ -10,8 +10,6 @@ import {
   LayoutDashboard,
   ListTree,
   Moon,
-  PanelLeftClose,
-  PanelLeftOpen,
   Rows3,
   Rows4,
   Search,
@@ -23,7 +21,6 @@ import {
   Menu,
   X,
 } from 'lucide-react';
-import { cn } from '@/lib/utils';
 import { IconButton, Kbd } from '@/components/ui/controls';
 import { CommandPalette } from './CommandPalette';
 import { signOut } from '@/server/auth-actions';
@@ -47,7 +44,6 @@ export function AppShell({
   orgName,
   initialTheme,
   initialDensity,
-  initialCollapsed,
   themeChosen,
   user,
 }: {
@@ -55,7 +51,6 @@ export function AppShell({
   orgName: string;
   initialTheme: Theme;
   initialDensity: Density;
-  initialCollapsed: boolean;
   /** False until the user has explicitly picked a theme; light is used until then. */
   themeChosen: boolean;
   /** Null on the sign-in page, where there is nobody to sign out. */
@@ -64,7 +59,6 @@ export function AppShell({
   const pathname = usePathname();
   const [chosenTheme, setChosenTheme] = useState<Theme | null>(themeChosen ? initialTheme : null);
   const [density, setDensity] = useState<Density>(initialDensity);
-  const [collapsed, setCollapsed] = useState(initialCollapsed);
   const [paletteOpen, setPaletteOpen] = useState(false);
   const [navOpen, setNavOpen] = useState(false);
 
@@ -101,27 +95,16 @@ export function AppShell({
     persist('ie-density', d);
   }, []);
 
-  const toggleCollapsed = useCallback(() => {
-    setCollapsed((c) => {
-      persist('ie-nav', c ? '0' : '1');
-      return !c;
-    });
-  }, []);
-
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
       if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'k') {
         e.preventDefault();
         setPaletteOpen((v) => !v);
       }
-      if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'b') {
-        e.preventDefault();
-        toggleCollapsed();
-      }
     };
     document.addEventListener('keydown', onKey);
     return () => document.removeEventListener('keydown', onKey);
-  }, [toggleCollapsed]);
+  }, []);
 
   // Closing on click covers the ordinary case; this also catches back/forward,
   // which would otherwise leave the panel open over the page it navigated to.
@@ -134,101 +117,81 @@ export function AppShell({
   }
 
   const active = (href: string) => (href === '/' ? pathname === '/' : pathname.startsWith(href));
-  const current = NAV.find((n) => active(n.href));
 
   return (
-    <div className="flex min-h-screen">
-      {/* ── Sidebar ─────────────────────────────────────────────────────── */}
-      <nav
-        className={cn(
-          'no-print sticky top-0 hidden h-screen shrink-0 flex-col transition-[width] duration-200 md:flex',
-          collapsed ? 'w-[60px]' : 'w-[228px]',
-        )}
-        style={{ background: 'var(--surface-raised)', borderRight: '1px solid var(--border-subtle)' }}
-        aria-label="Primary"
+    <div className="flex min-h-screen flex-col">
+      {/* ── Top bar ──────────────────────────────────────────────────────
+          One thin, quiet band across the full width: brand, destinations,
+          then the tools. Replacing the sidebar returns roughly 228px of
+          horizontal space to the tables, which is what this product is
+          mostly made of. The page title is not repeated here — every page
+          already opens with its own header. */}
+      <header
+        className="no-print sticky top-0 z-40 backdrop-blur-md"
+        style={{
+          background: 'color-mix(in srgb, var(--surface-raised) 82%, transparent)',
+          borderBottom: '1px solid var(--border-subtle)',
+        }}
       >
-        <div className={cn('flex h-14 items-center gap-2.5 px-3.5', collapsed && 'justify-center px-0')}>
-          <div
-            className="grid size-8 shrink-0 place-items-center rounded-[10px] text-title font-bold text-white"
-            style={{ background: 'var(--brand-600)', boxShadow: 'var(--shadow-brand)' }}
-            aria-hidden
+        <div className="mx-auto flex h-12 w-full max-w-[1600px] items-center gap-1 px-4 md:px-6">
+          <button
+            onClick={() => setNavOpen((v) => !v)}
+            aria-label={navOpen ? 'Close menu' : 'Open menu'}
+            aria-expanded={navOpen}
+            aria-controls="mobile-nav"
+            className="-ml-1 grid size-9 shrink-0 cursor-pointer place-items-center rounded-[var(--radius-sm)] transition-colors hover:bg-[var(--surface-hover)] md:hidden"
+            style={{ color: 'var(--text-secondary)' }}
           >
-            IE
-          </div>
-          {!collapsed ? (
-            <div className="min-w-0 leading-tight">
-              <p className="truncate text-title font-semibold" style={{ color: 'var(--text-primary)' }}>
-                {orgName}
-              </p>
-              <p className="truncate text-meta" style={{ color: 'var(--text-tertiary)' }}>
-                Subscription Intelligence
-              </p>
-            </div>
-          ) : null}
-        </div>
+            {navOpen ? <X size={18} strokeWidth={2} aria-hidden /> : <Menu size={18} strokeWidth={2} aria-hidden />}
+          </button>
 
-        <div className="flex-1 space-y-0.5 overflow-y-auto px-2 py-2">
-          {NAV.map((item) => {
-            const isActive = active(item.href);
-            const Icon = item.icon;
-            return (
-              <Link
-                key={item.href}
-                href={item.href}
-                title={collapsed ? item.label : item.hint}
-                className={cn(
-                  'group relative flex items-center gap-2.5 rounded-[var(--radius-sm)] px-2.5 py-2 text-title font-medium transition-colors duration-150',
-                  collapsed && 'justify-center px-0',
-                )}
-                style={
-                  isActive
-                    ? { background: 'var(--brand-50)', color: 'var(--brand-700)' }
-                    : { color: 'var(--text-secondary)' }
-                }
-              >
-                {isActive ? (
-                  <span
-                    className="absolute top-1/2 left-0 h-4 w-[3px] -translate-y-1/2 rounded-r-full"
-                    style={{ background: 'var(--brand-600)' }}
-                    aria-hidden
-                  />
-                ) : null}
-                <Icon size={16} strokeWidth={2} aria-hidden className="shrink-0" />
-                {!collapsed ? <span className="truncate">{item.label}</span> : null}
-              </Link>
-            );
-          })}
-        </div>
+          <Link href="/" className="mr-3 flex shrink-0 items-center gap-2" aria-label={`${orgName} home`}>
+            <span
+              className="grid size-6 shrink-0 place-items-center rounded-[var(--radius-xs)] text-micro font-bold text-white"
+              style={{ background: 'var(--brand-600)' }}
+              aria-hidden
+            >
+              IE
+            </span>
+            <span className="hidden truncate text-title font-semibold sm:inline" style={{ color: 'var(--text-primary)' }}>
+              {orgName}
+            </span>
+          </Link>
 
-        <div className="space-y-2 px-2 pb-3" style={{ borderTop: '1px solid var(--border-subtle)', paddingTop: '0.75rem' }}>
-          {/* Who is signed in, and the way out. A shared workstation is the norm
-              here, so leaving no way to end a session would mean the next person
-              inherits an administrator's view of stored credentials. */}
-          {user ? (
-            <form action={signOut} className={cn('flex items-center gap-2', collapsed ? 'justify-center' : 'px-1')}>
-              {!collapsed ? (
-                <div className="min-w-0 flex-1 leading-tight">
-                  <p className="truncate text-xs font-medium" style={{ color: 'var(--text-secondary)' }}>
-                    {user.name}
-                  </p>
-                  <p className="truncate text-meta" style={{ color: 'var(--text-tertiary)' }} title={user.email}>
-                    {user.role.charAt(0) + user.role.slice(1).toLowerCase()}
-                  </p>
-                </div>
-              ) : null}
-              <button
-                type="submit"
-                title={`Sign out ${user.email}`}
-                aria-label={`Sign out ${user.email}`}
-                className="grid size-7 shrink-0 cursor-pointer place-items-center rounded-[var(--radius-sm)] transition-colors hover:bg-[var(--surface-hover)]"
-                style={{ color: 'var(--text-tertiary)' }}
-              >
-                <LogOut size={14} strokeWidth={2} aria-hidden />
-              </button>
-            </form>
-          ) : null}
+          {/* Destinations. Evenly spaced, low contrast until they are the
+              current one — the bar should recede once you have arrived. */}
+          <nav className="hidden min-w-0 items-center gap-0.5 md:flex" aria-label="Primary">
+            {NAV.map((item) => {
+              const isActive = active(item.href);
+              return (
+                <Link
+                  key={item.href}
+                  href={item.href}
+                  title={item.hint}
+                  aria-current={isActive ? 'page' : undefined}
+                  className="rounded-[var(--radius-sm)] px-2.5 py-1.5 text-xs font-medium whitespace-nowrap transition-colors hover:bg-[var(--surface-hover)]"
+                  style={isActive ? { color: 'var(--text-primary)', background: 'var(--surface-hover)' } : { color: 'var(--text-tertiary)' }}
+                >
+                  {item.label}
+                </Link>
+              );
+            })}
+          </nav>
 
-          <div className={cn('flex items-center gap-1', collapsed ? 'flex-col' : 'justify-between px-1')}>
+          <div className="ml-auto flex shrink-0 items-center gap-1.5">
+            <button
+              onClick={() => setPaletteOpen(true)}
+              className="flex h-8 cursor-pointer items-center gap-2 rounded-[var(--radius-sm)] border px-2.5 text-xs transition-colors hover:bg-[var(--surface-hover)]"
+              style={{ borderColor: 'var(--border-default)', color: 'var(--text-tertiary)', background: 'var(--surface-raised)' }}
+            >
+              <Search size={13} strokeWidth={2.2} aria-hidden />
+              <span className="hidden lg:inline">Search or jump to…</span>
+              <span className="hidden items-center gap-0.5 lg:flex">
+                <Kbd>⌘</Kbd>
+                <Kbd>K</Kbd>
+              </span>
+            </button>
+
             <IconButton
               icon={theme === 'dark' ? Sun : Moon}
               label={theme === 'dark' ? 'Switch to light theme' : 'Switch to dark theme'}
@@ -241,122 +204,64 @@ export function AppShell({
               size="xs"
               onClick={() => applyDensity(density === 'compact' ? 'comfortable' : 'compact')}
             />
-            <IconButton
-              icon={collapsed ? PanelLeftOpen : PanelLeftClose}
-              label={collapsed ? 'Expand sidebar' : 'Collapse sidebar'}
-              size="xs"
-              onClick={toggleCollapsed}
-            />
-          </div>
-        </div>
-      </nav>
 
-      {/* ── Main column ─────────────────────────────────────────────────── */}
-      <div className="flex min-w-0 flex-1 flex-col">
-        <header
-          className="no-print sticky top-0 z-40 flex h-14 items-center gap-3 px-4 backdrop-blur-md md:px-6"
-          style={{ background: 'color-mix(in srgb, var(--surface-canvas) 88%, transparent)', borderBottom: '1px solid var(--border-subtle)' }}
-        >
-          {/* The sidebar is hidden below `md`. Without this the only reachable
-              page on a phone is the one already open. */}
-          <button
-            onClick={() => setNavOpen((v) => !v)}
-            aria-label={navOpen ? 'Close menu' : 'Open menu'}
-            aria-expanded={navOpen}
-            aria-controls="mobile-nav"
-            className="-ml-1 grid size-9 shrink-0 cursor-pointer place-items-center rounded-[var(--radius-sm)] transition-colors hover:bg-[var(--surface-hover)] md:hidden"
-            style={{ color: 'var(--text-secondary)' }}
-          >
-            {navOpen ? <X size={18} strokeWidth={2} aria-hidden /> : <Menu size={18} strokeWidth={2} aria-hidden />}
-          </button>
-
-          <h1 className="truncate text-sm font-semibold tracking-tight" style={{ color: 'var(--text-primary)' }}>
-            {current?.label ?? 'Subscription Intelligence'}
-          </h1>
-          <span className="hidden text-xs md:inline" style={{ color: 'var(--text-tertiary)' }}>
-            {current?.hint}
-          </span>
-
-          <div className="ml-auto flex items-center gap-2">
-            <button
-              onClick={() => setPaletteOpen(true)}
-              className="flex h-8 cursor-pointer items-center gap-2 rounded-[var(--radius-sm)] border px-2.5 text-xs transition-colors hover:bg-[var(--surface-hover)]"
-              style={{ borderColor: 'var(--border-default)', color: 'var(--text-tertiary)', background: 'var(--surface-raised)' }}
-            >
-              <Search size={13} strokeWidth={2.2} aria-hidden />
-              <span className="hidden sm:inline">Search or jump to…</span>
-              <span className="hidden sm:flex items-center gap-0.5">
-                <Kbd>⌘</Kbd>
-                <Kbd>K</Kbd>
-              </span>
-            </button>
-
-            {/* The sidebar is hidden below `md`, and nothing replaces it, so the
-                sign-out control there is unreachable on a phone. This one covers
-                that case and is hidden once the sidebar is visible. */}
             {user ? (
-              <form action={signOut} className="md:hidden">
+              <form action={signOut} className="flex items-center">
                 <button
                   type="submit"
                   title={`Sign out ${user.email}`}
                   aria-label={`Sign out ${user.email}`}
-                  className="grid size-8 cursor-pointer place-items-center rounded-[var(--radius-sm)] border transition-colors hover:bg-[var(--surface-hover)]"
-                  style={{ borderColor: 'var(--border-default)', color: 'var(--text-tertiary)', background: 'var(--surface-raised)' }}
+                  className="grid size-8 cursor-pointer place-items-center rounded-[var(--radius-sm)] transition-colors hover:bg-[var(--surface-hover)]"
+                  style={{ color: 'var(--text-tertiary)' }}
                 >
                   <LogOut size={14} strokeWidth={2} aria-hidden />
                 </button>
               </form>
             ) : null}
           </div>
-        </header>
+        </div>
+      </header>
 
-        {/* Mobile navigation. A panel under the header rather than an overlay
-            drawer: it needs no focus trap, no scroll lock and no backdrop, and
-            it cannot strand someone behind a scrim on a small screen. */}
-        {navOpen ? (
-          <nav
-            id="mobile-nav"
-            aria-label="Primary"
-            className="no-print sticky top-14 z-30 md:hidden"
-            style={{ background: 'var(--surface-raised)', borderBottom: '1px solid var(--border-subtle)', boxShadow: 'var(--shadow-md)' }}
-          >
-            <ul className="space-y-0.5 p-2">
-              {NAV.map((item) => {
-                const isActive = active(item.href);
-                const Icon = item.icon;
-                return (
-                  <li key={item.href}>
-                    <Link
-                      href={item.href}
-                      onClick={() => setNavOpen(false)}
-                      aria-current={isActive ? 'page' : undefined}
-                      className="flex items-center gap-3 rounded-[var(--radius-sm)] px-3 py-2.5 text-sm font-medium transition-colors"
-                      style={
-                        isActive
-                          ? { background: 'var(--brand-50)', color: 'var(--brand-700)' }
-                          : { color: 'var(--text-secondary)' }
-                      }
-                    >
-                      <Icon size={17} strokeWidth={2} aria-hidden className="shrink-0" />
-                      <span className="min-w-0 flex-1 truncate">{item.label}</span>
-                    </Link>
-                  </li>
-                );
-              })}
-            </ul>
-            {user ? (
-              <div
-                className="flex items-center justify-between gap-3 px-5 py-3"
-                style={{ borderTop: '1px solid var(--border-subtle)' }}
-              >
-                <span className="min-w-0 truncate text-xs" style={{ color: 'var(--text-tertiary)' }}>
-                  {user.name} · {user.role.charAt(0) + user.role.slice(1).toLowerCase()}
-                </span>
-              </div>
-            ) : null}
-          </nav>
-        ) : null}
+      {/* Mobile destinations. A panel under the bar rather than an overlay
+          drawer: no focus trap, no scroll lock, nobody stranded behind a scrim. */}
+      {navOpen ? (
+        <nav
+          id="mobile-nav"
+          aria-label="Primary"
+          className="no-print sticky top-12 z-30 md:hidden"
+          style={{ background: 'var(--surface-raised)', borderBottom: '1px solid var(--border-subtle)', boxShadow: 'var(--shadow-md)' }}
+        >
+          <ul className="space-y-0.5 p-2">
+            {NAV.map((item) => {
+              const isActive = active(item.href);
+              const Icon = item.icon;
+              return (
+                <li key={item.href}>
+                  <Link
+                    href={item.href}
+                    onClick={() => setNavOpen(false)}
+                    aria-current={isActive ? 'page' : undefined}
+                    className="flex items-center gap-3 rounded-[var(--radius-sm)] px-3 py-2.5 text-sm font-medium transition-colors"
+                    style={isActive ? { background: 'var(--brand-50)', color: 'var(--brand-700)' } : { color: 'var(--text-secondary)' }}
+                  >
+                    <Icon size={17} strokeWidth={2} aria-hidden className="shrink-0" />
+                    <span className="min-w-0 flex-1 truncate">{item.label}</span>
+                  </Link>
+                </li>
+              );
+            })}
+          </ul>
+          {user ? (
+            <div className="px-5 py-3" style={{ borderTop: '1px solid var(--border-subtle)' }}>
+              <span className="truncate text-xs" style={{ color: 'var(--text-tertiary)' }}>
+                {user.name} · {user.role.charAt(0) + user.role.slice(1).toLowerCase()}
+              </span>
+            </div>
+          ) : null}
+        </nav>
+      ) : null}
 
+      <div className="mx-auto flex w-full max-w-[1600px] min-w-0 flex-1 flex-col">
         <main className="min-w-0 flex-1 px-4 py-5 md:px-6 md:py-6">{children}</main>
 
         <footer className="no-print px-6 pb-6 text-meta" style={{ color: 'var(--text-tertiary)' }}>

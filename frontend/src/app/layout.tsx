@@ -45,7 +45,6 @@ export default async function RootLayout({ children }: { children: React.ReactNo
   const themeChosen = themeCookie === 'dark' || themeCookie === 'light';
   const theme = themeCookie === 'dark' ? 'dark' : 'light';
   const density = jar.get('ie-density')?.value === 'compact' ? 'compact' : 'comfortable';
-  const collapsed = jar.get('ie-nav')?.value === '1';
 
   return (
     <html
@@ -70,7 +69,6 @@ export default async function RootLayout({ children }: { children: React.ReactNo
           orgName={brand.orgName}
           initialTheme={theme}
           initialDensity={density}
-          initialCollapsed={collapsed}
           themeChosen={themeChosen}
           user={user ? { name: user.name, email: user.email, role: user.role } : null}
         >
